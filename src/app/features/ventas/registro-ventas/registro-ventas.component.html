@@ -1,0 +1,116 @@
+<p-toast></p-toast>
+
+<div class="grid">
+    <div class="col-12 md:col-4">
+        <div class="card">
+            <h5>Fecha Pedidos: </h5>
+            <div class="flex align-items-center gap-2">
+                <p-calendar id="fecha" [(ngModel)]="today" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+                <p-calendar id="fechaF" [(ngModel)]="todayF" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+                <p-button icon="pi pi-eye" (click)="consultar()"></p-button>
+            </div>
+            <p-table [value]="pedidosCerrados" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Mesa</th>
+                        <th>N° Pedido</th>
+                        <th>Atendido</th>
+                        <th>Fecha</th>
+                        <th>Opciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td>{{ item.mesa?.nombre }}</td>
+                        <td>{{ item.id }}</td>
+                        <td>{{item.user?.nombre}}</td>
+                        <td>{{ item.fecha }}</td>
+                        <td>
+                            <p-button label="Ver" icon="pi pi-eye"
+                                (click)="verPedido(item.mesa?.id, item.mesa?.nombre, item.id)"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <div class="col-12 md:col-8" *ngIf="detallesPedido.length > 0">
+        <div class="card">
+            <h5>Detalle Pedido: <b>{{mesa}}  N° Pedido: {{pedido_id}} </b></h5>
+            <br>
+
+            <p-table [value]="detallesPedido" [paginator]="true" [rows]="10" dataKey="id" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-detalle>
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td>
+                        <td>{{ detalle.total_cantidad }}</td>
+                        <td>{{ detalle.producto.precio | currency }}</td>
+                        <td>{{ detalle.total_subtotal | currency }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            <div class="field">
+                <h3>Total a Pagar: {{ calcularTotal() | currency }}</h3>
+                <h3>Cantidad Productos: {{ totalcantidad }}</h3>
+                <h3>Estado Pedido: {{ infoPedido.estado?.nombre }}</h3>
+                <h3>Saldo Pendiente: {{ saldo | currency }}</h3>
+            </div>
+
+            <div class="card">
+                <h5>Medios de Pagos</h5>
+                <div class="field flex align-items-center">
+                    <app-selector-tipo-pago *ngIf="mesa !== ''" (itemSeleccionado)="tipopago = $event"></app-selector-tipo-pago>
+                    <label for="valor" class="ml-2">Valor:</label>
+                    <input pInputText type="number" id="valor" [(ngModel)]="venta.valor" (ngModelChange)="compararValor()" class="ml-2" />
+                    <p *ngIf="venta.valor > calcularTotal()" style="color: red;" class="ml-2">El valor ingresado excede el total del pedido.</p>
+                    <p-button label="Agregar" icon="pi pi-plus" (click)="agregarPago()" styleClass="p-button-success ml-2"></p-button>
+                    <p-button label="Agregar Total" icon="pi pi-plus" (click)="agregarPagoTotal()" styleClass="p-button-info ml-2"></p-button>
+                </div>
+                <p-table [value]="pagos" [paginator]="true" [rows]="10" dataKey="id" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Tipo de Pago</th>
+                            <th>Valor</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-pago>
+                        <tr>
+                            <td>{{ pago.tipo }}</td>
+                            <td>{{ pago.valor | currency }}</td>
+                            <td>
+                                <p-button label="Quitar" icon="pi pi-times" (click)="quitarPago(pago)" styleClass="p-button-danger"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+            <div class="field flex align-items-center mt-3">
+                <label for="propina" class="mr-2">Propina:</label>
+                <input pInputText type="number" id="propina" [(ngModel)]="venta.propina" class="mr-2" />
+            </div>
+            <div class="field mt-3">
+                <label for="observaciones">Observaciones</label>
+                <textarea id="observaciones" pInputTextarea [(ngModel)]="observaciones" rows="3" class="w-full"></textarea>
+            </div>
+            </div>
+
+            <div class="field">
+                <div class="full-width">
+                    <p-button label="Finalizar Venta" icon="pi pi-check" (click)="confirm1()" styleClass="p-button-success" styleClass="w-full"></p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<p-confirmDialog [style]="{width: '90%', maxWidth: '50vw'}"></p-confirmDialog>

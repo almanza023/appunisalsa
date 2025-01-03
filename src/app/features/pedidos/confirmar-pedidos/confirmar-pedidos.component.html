@@ -1,0 +1,165 @@
+
+<p-toast></p-toast>
+
+<div class="grid">
+    <div class="col-4 md:col-4">
+      <div class="card">
+        <h5>Fecha Pedidos: </h5>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <p-calendar id="fecha" [(ngModel)]="today" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+            <p-button icon="pi pi-eye" (click)="getMesas()"></p-button>
+        </div>
+        <p-table [value]="mesas" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Mesa</th>
+              <th>N° Pedido</th>
+              <th>Atendido</th>
+              <th>Opciones</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.nombre }}</td>
+              <td>{{ item.pedido_id }}</td>
+              <td>{{item.usuario}}</td>
+            <td>
+              <p-button label="Ver" icon="pi pi-eye" (click)="verPedido(item.id, item.nombre, item.pedido_id)"></p-button>
+            </td>
+
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <div class="col-8 md:col-8">
+        <div class="card">
+          <h5>Detalle Pedido:  <b>{{mesa}}</b></h5>
+          <h5>N° Pedido: {{pedido_id}}</h5>
+            <p-button label="Ver Historial Entregas" icon="pi pi-eye" (click)="verHistorial()"></p-button>
+            <button
+            (click)="getPedido(pedido_id)"
+            pButton
+            label="Total Pedido"
+            pRipple
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-success mr-2"
+        ></button>
+          <p-table [value]="detalles" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Fecha Pedido</th>
+                <th>Entregar</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>{{ item.producto?.nombre }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>{{ item.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+                <td>
+                    <p-button *ngIf="item.cantidad > 0" label="Entregar" icon="pi pi-send" (click)="confirm1(item)" styleClass="p-button-success"></p-button>
+                    <p-button *ngIf="item.cantidad <= 0" label="Devolver a Stock" icon="pi pi-times"  (click)="confirm1(item)"  styleClass="p-button-danger"></p-button>
+                </td>
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <p-dialog
+      [(visible)]="historialDialog"
+      [style]="{ width: '850px' }"
+      [modal]="true"
+      header
+      class="p-fluid"
+  >
+      <div class="grid">
+          <div class="col-12">
+              <p-table #dt [value]="historial"
+              [globalFilterFields]="['producto.nombre', 'entregado']"
+              [paginator]="true" [rows]="10" dataKey="id"
+              responsiveLayout="scroll">
+              <ng-template pTemplate="caption">
+                <div
+                    class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                >
+                    <h5 class="m-0">Historial de Entregas </h5>
+                    <span class="block mt-2 md:mt-0 p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input
+                            (input)="onGlobalFilter(dt, $event)"
+                            pInputText
+                            type="text"
+                            placeholder="Buscar..."
+                            class="w-full sm:w-auto"
+                        />
+                    </span>
+                </div>
+            </ng-template>
+
+                <ng-template pTemplate="header">
+                      <tr>
+                          <th>Producto</th>
+                          <th>Cantidad</th>
+                          <th>Estado</th>
+                          <th>Fecha</th>
+                      </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-detalle>
+                      <tr>
+                          <td>{{ detalle.producto.nombre }}</td>
+                          <td>{{ detalle.cantidad }}</td>
+                          <td>{{ detalle.entregado === 0 ? 'PENDIENTE' : 'ENTREGADO' }}</td>
+                          <td>{{ detalle.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+                      </tr>
+                  </ng-template>
+              </p-table>
+          </div>
+          </div>
+  </p-dialog>
+
+  <p-dialog
+    [(visible)]="clienteDialog"
+    [style]="{ width: '850px' }"
+    [modal]="true"
+    header
+    class="p-fluid"
+>
+    <div class="grid">
+        <div class="col-12">
+            <p-table [value]="detallesPedido" [paginator]="true" [rows]="10" dataKey="id" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-detalle>
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td>
+                        <td>{{ detalle.total_cantidad }}</td>
+                        <td>{{ detalle.producto.precio | currency }}</td>
+                        <td>{{ detalle.total_subtotal | currency }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            <div class="field">
+                <h3>Total a Pagar: {{ calcularTotal() | currency }}</h3>
+                <h3>Cantidad Productos: {{ totalcantidad  }}</h3>
+                <h3>Estado Pedido: {{ infoPedido.estado?.nombre }}</h3>
+            </div>
+        </div>
+        </div>
+</p-dialog>
+
+
+  </div>
+  <p-confirmDialog [style]="{width: '90%', maxWidth: '50vw'}"></p-confirmDialog>
