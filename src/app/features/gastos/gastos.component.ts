@@ -50,6 +50,10 @@ export class GastosComponent {
         this.today = this.formatDate(new Date());
         this.startDate = this.formatDate(new Date());
         this.endDate = this.formatDate(new Date());
+        this.filter={
+            fechaInicio:this.startDate,
+            fechaFinal:this.endDate,
+        }
 
         this.getDataAll(this.filter);
     }
@@ -293,19 +297,7 @@ filtrarPorFecha() {
 
     this.filter.fechaInicio=this.startDate;
     this.filter.fechaFinal=this.endDate;
-
-
-
     // Formatear las fechas para que solo quede YYYY-MM-DD
-    if (this.filter.fechaInicio) {
-        this.filter.fechaInicio = this.formatDate(new Date(this.filter.fechaInicio));
-    }
-    if (this.filter.fechaFinal) {
-        if(!this.filter.fechaFinal.includes('T')){
-            this.filter.fechaFinal = this.formatDate(new Date(this.filter.fechaFinal));
-        }
-    }
-
     this.getDataAll(this.filter);
 
 

@@ -64,7 +64,13 @@ export class AperturaCajaService {
   getEstadisticas(item:any): Observable<any> {
     const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
     let url=`${environment.baseURL}/apertura-estadisticas`;
-    return this.http.post<any>(url, {headers});
+    return this.http.post<any>(url, item, {headers});
+  }
+
+  getHistoricos(item:any): Observable<any> {
+    const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
+    let url=`${environment.baseURL}/apertura-historicos`;
+    return this.http.post<any>(url, item, {headers});
   }
 
 

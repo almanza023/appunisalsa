@@ -5,6 +5,7 @@ import { LayoutService } from 'src/app/layout/service/app.layout.service';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { AperturaCajaService } from 'src/app/core/services/apertura-caja.service';
 import { Router } from '@angular/router';
+import { MesasService } from 'src/app/core/services/mesas.service';
 
 @Component({
     templateUrl: './dashboard.component.html',
@@ -20,11 +21,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     rol = localStorage.getItem('rol');
     totalVentasDia: number = 0;
     productosBajosStock: number = 0;
-
+    pedidos:any=[];
     constructor(
         private service: AperturaCajaService,
          public layoutService: LayoutService,
          public messageService: MessageService,
+         private mesaService: MesasService,
          private router: Router,
          ) {
 
@@ -35,24 +37,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     }
 
-    getPedidosPendientes() {
-        // Implementar llamada al servicio para obtener pedidos pendientes
-        this.totalPedidosPendientes = 0; // Actualizar con datos reales
-    }
 
-    getPedidosEntregados() {
-        // Implementar llamada al servicio para obtener pedidos entregados
-        this.totalPedidosEntregados = 0; // Actualizar con datos reales
-    }
-
-    getPedidosActivos() {
-        // Implementar llamada al servicio para obtener pedidos activos
-        this.pedidosActivos = []; // Actualizar con datos reales
-    }
-
-    verPedido(pedidoId: number) {
-        // Implementar navegación para ver detalle del pedido
-    }
     nuevoPedido(){
         this.router.navigate(['/pedidos/registro/0']);
     }
@@ -72,15 +57,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     gestionarUsuarios() {
         this.router.navigate(['/usuarios']);
     }
-    configuracion(){
-
-    }
-
-    ngOnDestroy() {
-
-    }
 
     getDataAll() {
+        let rol = localStorage.getItem('rol');
+        let user_id = localStorage.getItem('user_id');
         const hoy = new Date();
         const fechaActual = hoy.getFullYear() + '-' +
                            String(hoy.getMonth() + 1).padStart(2,'0') + '-' +
@@ -91,16 +71,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
                              String(manana.getMonth() + 1).padStart(2,'0') + '-' +
                              String(manana.getDate()).padStart(2,'0');
         let data={
-            fechaInicio:fechaActual,
-            fechaFin:fechaSiguiente,
+            fecha_inicio:fechaActual,
+            fecha_final:fechaSiguiente,
+            rol:rol,
+            user_id
         };
 
-        this.service.getEstadisticas(data).subscribe(
+        this.service.getEstadisticas(data)
+        .pipe(finalize(() => this.getPedidosAbiertos()))
+        .subscribe(
             (response) => {
-                console.log(response.data);
                 this.detalle = response.data;
                 this.totalPedidosPendientes=response.data.totalPedidos;
                 this.totalVentasDia=response.data.totalVentas;
+                this.totalPedidosEntregados=response.data.totalPedidosCerrados;
                 this.productosBajosStock=response.data.totalProductos;
             },
             (error) => {
@@ -112,6 +96,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 });
             }
         );
+    }
+
+    getPedidosAbiertos() {
+        this.mesaService.getMesasPedidosActivos().subscribe(
+            (response) => {
+                //console.log(response.data);
+                this.pedidos = response.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: error.error.data,
+                    life: 3000,
+                });
+            }
+        );
+    }
+
+    ngOnDestroy(): void {
+
+    }
+
+    getPedido(id:any){
+        this.router.navigate(['/pedidos/registro/'+id]);
     }
 
 

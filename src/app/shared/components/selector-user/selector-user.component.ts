@@ -29,7 +29,7 @@ export class SelectorUserComponent {
     .subscribe(response => {
       this.items=response.data;
       // Filtrar usuarios por el tipo de rol especificado
-      this.items = [{ id: null, nombre: 'TODOS' }, ...this.items.filter(item => item.rol === this.tipo)];
+      this.items = [{ id: null, nombre: 'TODOS' }, ...this.items.filter(item => item.rol == this.tipo)];
       //console.log(response.data)
       } ,error => {
         //console.log( error.error)
@@ -46,7 +46,7 @@ export class SelectorUserComponent {
 
   filtrar(valor:any) {
     if(valor){
-     this.seleccionado= this.items.find(objeto => objeto['id'] === valor);
+     this.seleccionado= this.items.find(objeto => objeto['id'] == valor);
     }
    }
 

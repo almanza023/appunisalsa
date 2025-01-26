@@ -1,0 +1,121 @@
+<p-toast></p-toast>
+<div class="p-fluid">
+    <div class="card">
+
+        <p-table #dt [value]="productos" [rows]="20"
+        [globalFilterFields]="['nombre', 'precio', 'stock_actual', 'descripcion']"
+        [paginator]="true"
+        [rowsPerPageOptions]="[10, 20, 30]" dataKey="id"
+        responsiveLayout="scroll">
+
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                <h5 class="m-0">Información General de Productos</h5>
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input
+                        (input)="onGlobalFilter(dt, $event)"
+                        pInputText
+                        type="text"
+                        placeholder="Buscar..."
+                        class="w-full sm:w-auto"
+                    />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Stock Actual</th>
+                <th>Precio Venta</th>
+                <th>Cantidad</th>
+                <th>Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-producto>
+            <tr>
+                <td>
+                    <img [src]="producto.rutaimagen" alt="" width="70px" height="70px">
+                </td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.stock_actual }}</td>
+                <td>
+                    <input pInputText type="number" [(ngModel)]="producto.precio" [ngModelOptions]="{ standalone: true }" min="1" [value]="1" />
+                </td>
+                <td>
+                    <input pInputText type="number" [(ngModel)]="producto.cantidad" [ngModelOptions]="{ standalone: true }" min="1" [value]="1" (change)="producto.cantidad = producto.cantidad || 1" />
+                </td>
+
+                <td>
+                    <p-button label="Guardar" icon="pi pi-plus" (click)="agregarProducto(producto); producto.cantidad = 0;"></p-button>
+                    <p-button
+                    (click)="verHistorialMovimiento(producto.id, producto.nombre)"
+                    icon="pi pi-history"
+                    styleClass="p-button-warning"
+                    label="Historial de Movimiento"
+                ></p-button>
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+    </div>
+</div>
+
+<p-dialog
+    [(visible)]="displayMovimientosDialog"
+    [modal]="true"
+    [style]="{ width: '80vw' }"
+    header="Historial de Movimientos"
+>
+    <label style="font-weight: bold;">{{ nombreProducto }}</label>
+    <p-table
+        [value]="movimientos"
+        [paginator]="true"
+        [rows]="10"
+        dataKey="id"
+        responsiveLayout="scroll"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Saldo</th>
+                <th>Precio Venta</th>
+                <th>Precio Compra</th>
+                <th>Porcentaje Utilidad</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-movimiento>
+            <tr>
+                <td>{{ movimiento.created_at | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                <td>{{ movimiento.descripcion }}</td>
+                <td>{{ movimiento.cantidad }}</td>
+                <td>{{ movimiento.saldo }}</td>
+                <td>{{ movimiento.precio_venta | currency }}</td>
+                <td>{{ movimiento.precio_compra | currency }}</td>
+                <td *ngIf="movimiento.precio_compra > 0">{{ ((movimiento.precio_venta - movimiento.precio_compra) / movimiento.precio_compra * 100).toFixed(2) }}%</td>
+                <td *ngIf="movimiento.precio_compra <= 0">N/A</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <ng-template pTemplate="footer">
+        <button
+            (click)="displayMovimientosDialog = false"
+            pButton
+            pRipple
+            label="Cerrar"
+            icon="pi pi-times"
+            class="p-button-danger"
+        ></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '90%', maxWidth: '50vw'}"></p-confirmDialog>
+
+
+

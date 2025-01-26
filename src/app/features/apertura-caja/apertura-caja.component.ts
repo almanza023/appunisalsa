@@ -7,12 +7,13 @@ import { MessageService } from 'primeng/api';
 
 import {  AperturaCajaService } from 'src/app/core/services/apertura-caja.service';
 import { AperturaCaja } from 'src/app/core/interface/AperturaCaja';
-
+import { TicketAperturaCajaComponent } from 'src/app/shared/components/ticket-apertura-caja/ticket-apertura-caja.component';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
     selector: 'app-apertura-caja',
     templateUrl: './apertura-caja.component.html',
-    providers: [MessageService],
+    providers: [MessageService, DialogService],
 })
 export class AperturaCajaComponent {
     clienteDialog: boolean = false;
@@ -33,12 +34,13 @@ export class AperturaCajaComponent {
     objectModel:AperturaCaja={};
 
     nombreModulo: string = 'Módulo de Apertura de Caja';
-
+@ViewChild(TicketAperturaCajaComponent) ticketComponent: TicketAperturaCajaComponent;
 
 
     constructor(
         private service: AperturaCajaService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private dialogService: DialogService
     ) {}
 
 
@@ -257,4 +259,6 @@ export class AperturaCajaComponent {
         }
         return model
     }
-}
+
+    }
+

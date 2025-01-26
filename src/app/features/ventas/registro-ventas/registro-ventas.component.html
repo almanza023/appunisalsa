@@ -15,7 +15,7 @@
                         <th>Mesa</th>
                         <th>N° Pedido</th>
                         <th>Atendido</th>
-                        <th>Fecha</th>
+                        <th>Fecha Pedido</th>
                         <th>Opciones</th>
                     </tr>
                 </ng-template>
@@ -75,6 +75,12 @@
                     <p *ngIf="venta.valor > calcularTotal()" style="color: red;" class="ml-2">El valor ingresado excede el total del pedido.</p>
                     <p-button label="Agregar" icon="pi pi-plus" (click)="agregarPago()" styleClass="p-button-success ml-2"></p-button>
                     <p-button label="Agregar Total" icon="pi pi-plus" (click)="agregarPagoTotal()" styleClass="p-button-info ml-2"></p-button>
+
+                </div>
+                <div class="field" *ngIf="tipopago.id ==1">
+                    <label for="dineroRecibido" class="mr-2">Dinero Recibido:</label>
+                    <input pInputText type="number" id="dineroRecibido" [(ngModel)]="venta.dineroRecibido" (ngModelChange)="calcularCambio()" class="mr-2" />
+                    <p *ngIf="venta.dineroRecibido > 0" style="color: green;" class="ml-2">Cambio a Devolver: {{ (venta.dineroRecibido - calcularTotal()) | currency }}</p>
                 </div>
                 <p-table [value]="pagos" [paginator]="true" [rows]="10" dataKey="id" responsiveLayout="scroll">
                     <ng-template pTemplate="header">
@@ -96,11 +102,11 @@
                 </p-table>
 
             <div class="field flex align-items-center mt-3">
-                <label for="propina" class="mr-2">Propina:</label>
+                <label for="propina" class="mr-2"><b>Propina:</b></label>
                 <input pInputText type="number" id="propina" [(ngModel)]="venta.propina" class="mr-2" />
             </div>
             <div class="field mt-3">
-                <label for="observaciones">Observaciones</label>
+                <label for="observaciones"><b>Observaciones</b></label>
                 <textarea id="observaciones" pInputTextarea [(ngModel)]="observaciones" rows="3" class="w-full"></textarea>
             </div>
             </div>
@@ -109,8 +115,12 @@
                 <div class="full-width">
                     <p-button label="Finalizar Venta" icon="pi pi-check" (click)="confirm1()" styleClass="p-button-success" styleClass="w-full"></p-button>
                 </div>
+                <app-ticketpos *ngIf="ventaReport" [data]="ventaReport"></app-ticketpos>
             </div>
+
+
         </div>
     </div>
 </div>
 <p-confirmDialog [style]="{width: '90%', maxWidth: '50vw'}"></p-confirmDialog>
+

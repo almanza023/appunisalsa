@@ -17,9 +17,16 @@ export class ReporteDiaComponent {
     fecha_cierre:any="";
     data:any={};
     filter:any={};
+    historialDialog:boolean=false;
+    historial:any=[];
+    dataReport:any;
+
     ngOnInit(): void {
         this.today = this.formatDate(new Date());
         this.todayF = this.formatDate(new Date(Date.now() + 86400000)); // Sumar 1 día a la fecha actual
+        this.filter.fechaInicio = this.today;
+        this.filter.fechaFinal=this.todayF;
+        this.getData(this.filter);
     }
 
     constructor(
@@ -57,17 +64,20 @@ export class ReporteDiaComponent {
             return;
         }
 
-        this.filter.fechaInicio = this.formatDate(new Date(Date.parse(this.today) + 86400000));
-        this.filter.fechaFinal=this.formatDate(new Date(Date.parse(this.todayF) + 86400000));
-        this.getData(this.filter);
+
 
     }
 
     getData(item:any) {
+        this.data=[];
         this.service.postDia(item).subscribe(
             (response) => {
                 //console.log(response.data);
                 this.data = response.data;
+
+
+
+
                 if(this.data.length==0){
                     this.messageService.add({
                         severity: 'warn',
@@ -75,7 +85,64 @@ export class ReporteDiaComponent {
                         detail:"No Existen Datos",
                         life: 3000,
                     });
+                    return;
+                }else{
+                    this.dataReport = {
+                        caja_id:this.data.caja_id,
+                        fecha_inicio:this.data.fecha_inicio,
+                        base_inicial:this.data.base_inicial,
+                        totalventas:this.data.totalventas,
+                        totalgastos:this.data.totalgastos,
+                        totalneto:this.data.totalneto,
+                        ventas: this.data.ventas.map((v:any) => {
+                            return {
+                                fecha:v.created_at,
+                                comanda:v.pedido?.comanda,
+                                total:v.total,
+                            }
+                        }),
+                        pedidos:this.data.ventas.reduce((acc:any, curr:any) => {
+                            const usuario = curr.user?.nombre;
+                            const exist = acc.find((item:any) => item.usuario === usuario);
+                            if(exist){
+                                exist.totalpedidos++;
+                            }else{
+                                acc.push({
+                                    usuario,
+                                    totalpedidos:1,
+                                });
+                            }
+                            return acc;
+                        },[]),
+                        gastos: this.data.gastos.map((g:any) => {
+                            return {
+                                tipo:g.tipogasto?.nombre,
+                                fecha:g.created_at,
+                                total:g.valortotal,
+                            }
+                        }),
+                        pagos:this.data.pagos,
+                        productos:this.data.ventas.reduce((acc:any, curr:any) => {
+                            curr.detalles.forEach((d:any) => {
+                                const exist = acc.find((item:any) => item.producto_id === d.producto_id);
+                                if(exist){
+                                    exist.cantidad += d.cantidad;
+                                }else{
+                                    acc.push({
+                                        producto_id:d.producto_id,
+                                        nombre:d.producto?.nombre,
+                                        cantidad:d.cantidad,
+                                        stock_actual:d.producto?.stock_actual,
+                                    });
+                                }
+                            });
+                            return acc;
+                        },[]),
+
+                    };
+                    console.log(this.dataReport);
                 }
+
             },
             (error) => {
                 this.messageService.add({
@@ -102,7 +169,7 @@ export class ReporteDiaComponent {
         let user_id=localStorage.getItem('user_id');
         let data={
             user_id,
-            fecha_cierre:this.formatDate(new Date(Date.parse(this.todayF) + 86400000)),
+            fecha_cierre:this.today,
             caja_id:item.caja_id,
             monto_final:(item.base_inicial + item.totalventas)-item.totalgastos,
             totalgastos:item.totalgastos,
@@ -111,7 +178,7 @@ export class ReporteDiaComponent {
         }
 
         this.service.putData(data.caja_id, data)
-        .pipe(finalize(() => this.consultar()))
+        .pipe(finalize(() => this.getData(this.filter)))
         .subscribe(
             (response) => {
                 let severity = '';
@@ -163,7 +230,20 @@ export class ReporteDiaComponent {
         });
     }
 
+    verHistorialVentas(){
+        this.historialDialog=true;
+        this.historial=this.data.ventas;
+    }
 
+    verHistorialGastos(){
+        this.historialDialog=true;
+        this.historial=this.data.gastos;
+    }
+
+
+    reloadPage(){
+        this.getData(this.filter);
+    }
 
 
 }

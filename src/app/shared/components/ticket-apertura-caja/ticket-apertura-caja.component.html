@@ -1,0 +1,51 @@
+
+<button pButton icon="pi pi-print" styleClass="p-button-rounded p-button-primary" (click)="printTicket()"> Imprimir</button>
+<div style="display: none;" >
+<div id="ticket-pos" class="ticket" >
+    <p>***************************************************</p>
+    <h1>{{ tienda }}</h1>
+    <p>{{ direccion }}</p>
+    <p>Tel: {{ telefono }}</p>
+    <p>***************************************************</p>
+    <p><b>APERTURA DE CAJA</b></p>
+    <p>Fecha: {{ data.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+    <p>***************************************************</p>
+    <div class="items">
+      <table>
+        <tr>
+          <th style="text-align: center;">Valor Base</th>
+          <th style="text-align: center;">Fecha</th>
+        </tr>
+        <tr>
+          <td style="text-align: center;">{{ data.monto_inicial | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td style="text-align: center;">{{ data.fecha | date:'dd/MM/yyyy' }}</td>
+        </tr>
+        <tr>
+            <th>Estado</th>
+            <td>{{ data.estado == 1 ? 'ABIERTO' : data.estado == 3 ? 'ANULADA' : 'CERRADA' }}</td>
+        </tr>
+        <tr *ngIf="data.user?.username">
+            <th>Creado por</th>
+            <td>{{ data.user?.username }}</td>
+        </tr>
+        <tr *ngIf="data.descripcion != null && data.descripcion != ''">
+            <td>Observaciones</td>
+        </tr>
+        <tr *ngIf="data.descripcion != null && data.descripcion != ''">
+            <td>{{ data.descripcion }}</td>
+        </tr>
+        <p>***************************************************</p>
+        <tr *ngIf="data.totalventas != null && data.totalventas != ''">
+            <th>Total Ventas</th>
+            <td>{{ data.totalventas | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+        </tr>
+        <tr *ngIf="data.totalgastos != null && data.totalgastos != ''">
+            <th>Total Ventas</th>
+            <td>{{ data.totalgastos | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+        </tr>
+      </table>
+    </div>
+    <p>***************************************************</p>
+  </div>
+</div>
+

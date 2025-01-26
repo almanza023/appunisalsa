@@ -2,6 +2,7 @@ import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
 import { MenuItem } from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-menu',
@@ -11,7 +12,9 @@ export class AppMenuComponent implements OnInit {
 
     items: MenuItem[] = [];
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(public layoutService: LayoutService,
+        private router:Router
+    ) { }
 
     ngOnInit() {
         let rol=localStorage.getItem('rol');
@@ -69,50 +72,50 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Apertura de Caja',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'apertura-caja',
+                        command: () => this.reloadCurrentRoute('apertura-caja')
 
                     },
                     {
                         label: 'Clientes',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'clientes',
+                        command: () => this.reloadCurrentRoute('clientes')
 
                     },
                     {
                         label: 'Productos',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'productos',
+                        command: () => this.reloadCurrentRoute('productos')
 
                     },
                     {
                         label: 'Pedidos',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'pedidos',
+                        command: () => this.reloadCurrentRoute('pedidos')
                     },
                     {
                         label: 'Entregas',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'pedidos/confirmar',
+                        command: () => this.reloadCurrentRoute('pedidos/confirmar')
                     },
                     {
                         label: 'Facturar',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'ventas/registro',
+                        command: () => this.reloadCurrentRoute('ventas/registro')
                     },
                     {
                         label: 'Ventas',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'ventas',
+                        command: () => this.reloadCurrentRoute('ventas')
                     },
                     {
                         label: 'Gastos',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'gastos',
+                        command: () => this.reloadCurrentRoute('gastos')
                     },
                     {
                         label: 'Compras',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'compras',
+                        command: () => this.reloadCurrentRoute('compras')
                     },
                 ]
             };
@@ -125,39 +128,39 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Apertura de Caja',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'apertura-caja',
+                        command: () => this.reloadCurrentRoute('apertura-caja')
 
                     },
                     {
                         label: 'Productos',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'productos',
+                        command: () => this.reloadCurrentRoute('productos')
 
                     },
                     {
                         label: 'Pedidos',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'pedidos',
+                        command: () => this.reloadCurrentRoute('pedidos')
                     },
                     {
                         label: 'Entregas',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'pedidos/confirmar',
+                        command: () => this.reloadCurrentRoute('pedidos/confirmar')
                     },
                     {
                         label: 'Facturar',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'ventas/registro',
+                        command: () => this.reloadCurrentRoute('ventas/registro')
                     },
                     {
                         label: 'Ventas',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'ventas',
+                        command: () => this.reloadCurrentRoute('ventas')
                     },
                     {
                         label: 'Gastos',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'gastos',
+                        command: () => this.reloadCurrentRoute('gastos')
                     },
 
                 ]
@@ -171,12 +174,12 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Pedidos',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'pedidos',
+                        command: () => this.reloadCurrentRoute('pedidos')
                     },
                     {
                         label: 'Nuevo Pedido',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'pedidos/registro/0',
+                        command: () => this.reloadCurrentRoute('pedidos/registro/0')
                     },
                 ]
             };
@@ -192,12 +195,15 @@ export class AppMenuComponent implements OnInit {
                         routerLink: 'reportes/dia',
 
                     },
+                    {
+                        label: 'Reporte Historico',
+                        icon: 'pi pi-fw pi-align-justify',
+                        routerLink: 'reportes/historicos',
+
+                    },
 
                 ]
             };
-
-
-
             let perfil =
             {
                 label: 'Perfil',
@@ -226,10 +232,12 @@ export class AppMenuComponent implements OnInit {
         }
         this.items.push(perfil);
         this.items.push(cerrar);
-
-
-
-
-
     }
+
+    reloadCurrentRoute(route:string){
+        this.router.navigateByUrl('/', {skipLocationChange:true}).then(()=>{
+            this.router.navigate([route]);
+        })
+    }
+
 }

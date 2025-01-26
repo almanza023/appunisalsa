@@ -56,6 +56,12 @@ export class VentasService {
     return this.http.post<any>(url, data, {headers});
   }
 
+  postFilter(item:any): Observable<any> {
+    const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
+    let url=`${environment.baseURL}/ventas-filter`;
+    return this.http.post<any>(url, item, {headers});
+  }
+
 
 
 

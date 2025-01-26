@@ -23,6 +23,7 @@
     "@ngx-translate/core": "^15.0.0",
     "chart.js": "^3.3.2",
     "file-saver": "^2.0.5",
+    "jspdf": "^2.5.2",
     "moment": "^2.29.4",
     "ngx-clipboard": "^16.0.0",
     "ngx-extended-pdf-viewer": "^18.0.0-beta.0",

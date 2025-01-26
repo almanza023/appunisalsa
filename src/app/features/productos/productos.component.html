@@ -135,6 +135,13 @@
                                     icon="pi pi-check"
                                     styleClass="p-button-rounded p-button-warning"
                                 ></p-button>
+
+                                <p-button
+                                    (click)="verHistorialMovimiento(item.id, item.nombre)"
+                                    icon="pi pi-history"
+                                    styleClass="p-button-rounded p-button-info"
+                                    label="Historial de Movimiento"
+                                ></p-button>
                             </div>
                         </td>
                     </tr>
@@ -294,3 +301,54 @@
         ></button>
     </ng-template>
 </p-dialog>
+
+<p-dialog
+    [(visible)]="displayMovimientosDialog"
+    [modal]="true"
+    [style]="{ width: '80vw' }"
+    header="Historial de Movimientos"
+>
+    <label style="font-weight: bold;">{{ nombreProducto }}</label>
+    <p-table
+        [value]="movimientos"
+        [paginator]="true"
+        [rows]="10"
+        dataKey="id"
+        responsiveLayout="scroll"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Saldo</th>
+                <th>Precio Venta</th>
+                <th>Precio Compra</th>
+                <th>Porcentaje Utilidad</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-movimiento>
+            <tr>
+                <td>{{ movimiento.created_at | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                <td>{{ movimiento.descripcion }}</td>
+                <td>{{ movimiento.cantidad }}</td>
+                <td>{{ movimiento.saldo }}</td>
+                <td>{{ movimiento.precio_venta | currency }}</td>
+                <td>{{ movimiento.precio_compra | currency }}</td>
+                <td *ngIf="movimiento.precio_compra > 0">{{ ((movimiento.precio_venta - movimiento.precio_compra) / movimiento.precio_compra * 100).toFixed(2) }}%</td>
+                <td *ngIf="movimiento.precio_compra <= 0">N/A</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <ng-template pTemplate="footer">
+        <button
+            (click)="displayMovimientosDialog = false"
+            pButton
+            pRipple
+            label="Cerrar"
+            icon="pi pi-times"
+            class="p-button-danger"
+        ></button>
+    </ng-template>
+</p-dialog>
+

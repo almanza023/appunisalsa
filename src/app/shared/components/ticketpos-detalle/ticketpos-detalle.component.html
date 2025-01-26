@@ -1,0 +1,40 @@
+
+<button pButton icon="pi pi-print" styleClass="p-button-rounded p-button-primary" (click)="printTicket()"> Imprimir</button>
+<div style="display: none;" >
+<div id="ticket-pos" class="ticket" >
+    <p>***************************************************</p>
+    <h1>{{ tienda }}</h1>
+    <p>{{ direccion }}</p>
+    <p>Tel: {{ telefono }}</p>
+    <p>***************************************************</p>
+    <div *ngIf="data?.venta">
+        <p style="font-size: 1.4em"><b>Comprobante N°: {{ data?.venta?.id }}</b></p>
+        <p style="font-size: 1.4em" ><b>Comanda N°: {{ data?.pedido?.comanda }}</b></p>
+        <p style="font-size: 1.4em">Fecha: {{ data?.venta?.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+    </div>
+    <p>***************************************************</p>
+    <div class="items">
+      <table>
+        <tr>
+          <th>Producto</th>
+          <th style="text-align: center;">Cant</th>
+          <th style="text-align: right;">Precio</th>
+          <th style="text-align: right;">Total</th>
+        </tr>
+        <tr *ngFor="let item of data?.detalles">
+          <td>{{ item.producto?.nombre }}</td>
+          <td style="text-align: center;">{{ item.cantidad }}</td>
+          <td style="text-align: right;">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td style="text-align: right;">{{ item.subtotal | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+        </tr>
+      </table>
+    </div>
+    <p>***************************************************</p>
+    <div class="total">
+      <p style="font-size: 1.5em"><strong>Total: {{ data?.venta?.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+    </div>
+    <p>***************************************************</p>
+    <p>¡Gracias por su visitarnos!</p>
+  </div>
+</div>
+

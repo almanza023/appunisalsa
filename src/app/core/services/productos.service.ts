@@ -58,6 +58,20 @@ export class ProductosService {
     return this.http.post<any>(url, data, {headers});
   }
 
+  postMovimientos(item:any): Observable<any> {
+    const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
+    let url=`${environment.baseURL}/productos-movimientos`;
+    return this.http.post<any>(url, item, {headers});
+  }
+
+  postDetalles(item:any): Observable<any> {
+    const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
+    let url=`${environment.baseURL}/productos-detalles`;
+    return this.http.post<any>(url, item, {headers});
+  }
+
+
+
 
 
 

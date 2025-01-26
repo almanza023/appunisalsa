@@ -6,10 +6,28 @@
       <div class="card">
         <h5>Fecha Pedidos: </h5>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <p-calendar id="fecha" [(ngModel)]="today" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
-            <p-button icon="pi pi-eye" (click)="getMesas()"></p-button>
+            <p-button icon="pi pi-eye" label="Consultar Pedidos" (click)="getMesas()"></p-button>
         </div>
-        <p-table [value]="mesas" responsiveLayout="scroll">
+        <p-table #dt  [rows]="25"
+                    [globalFilterFields]="['nombre', 'pedido_id']"
+                    [paginator]="true"
+                    [rowsPerPageOptions]="[10, 20, 30]" [value]="mesas" responsiveLayout="scroll">
+                    <ng-template pTemplate="caption">
+                        <div
+                            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                        >
+                            <span class="block mt-2 md:mt-0 p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input
+                                    (input)="onGlobalFilter(dt, $event)"
+                                    pInputText
+                                    type="text"
+                                    placeholder="Buscar..."
+                                    class="w-full sm:w-auto"
+                                />
+                            </span>
+                        </div>
+                    </ng-template>
           <ng-template pTemplate="header">
             <tr>
               <th>Mesa</th>
@@ -154,7 +172,6 @@
             <div class="field">
                 <h3>Total a Pagar: {{ calcularTotal() | currency }}</h3>
                 <h3>Cantidad Productos: {{ totalcantidad  }}</h3>
-                <h3>Estado Pedido: {{ infoPedido.estado?.nombre }}</h3>
             </div>
         </div>
         </div>

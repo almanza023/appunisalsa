@@ -5,6 +5,7 @@ import { NotfoundComponent } from './shared/components/notfound/notfound.compone
 import { AppLayoutComponent } from "./layout/app.layout.component";
 import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
+import { CajaGuard } from './core/guards/caja.guard';
 
 @NgModule({
     imports: [
@@ -23,7 +24,7 @@ import { AdminGuard } from './core/guards/admin.guard';
                     },
                     {
                         path: 'compras', loadChildren: () => import('./features/compras/compras.module').then(m => m.ComprasModule),
-                        canActivate: [AuthGuard]
+                        canActivate: [AuthGuard, CajaGuard]
                     },
                     {
                         path: 'categorias', loadChildren: () => import('./features/categorias/categorias.module').then(m => m.CategoriasModule),
@@ -31,7 +32,7 @@ import { AdminGuard } from './core/guards/admin.guard';
                     },
                     {
                         path: 'proveedores', loadChildren: () => import('./features/proveedores/proveedores.module').then(m => m.ProveedorModule),
-                        canActivate: [AuthGuard]
+                        canActivate: [AuthGuard, CajaGuard]
                     },
                     {
                         path: 'pedidos', loadChildren: () => import('./features/pedidos/pedidos.module').then(m => m.PedidosModule),
@@ -39,7 +40,7 @@ import { AdminGuard } from './core/guards/admin.guard';
                     },
                     {
                         path: 'productos', loadChildren: () => import('./features/productos/productos.module').then(m => m.ProductosModule),
-                        canActivate: [AuthGuard]
+                        canActivate: [AuthGuard, CajaGuard]
                     },
                     {
                         path: 'mesas', loadChildren: () => import('./features/mesas/mesas.module').then(m => m.MesasModule),
@@ -55,7 +56,7 @@ import { AdminGuard } from './core/guards/admin.guard';
                     },
                     {
                         path: 'apertura-caja', loadChildren: () => import('./features/apertura-caja/apertura-caja.module').then(m => m.AperturaCajaModule),
-                        canActivate: [AuthGuard]
+                        canActivate: [AuthGuard, CajaGuard]
                     },
                     {
                         path: 'usuarios', loadChildren: () => import('./features/usuarios/usuarios.module').then(m => m.UsuariosModule),
@@ -67,11 +68,11 @@ import { AdminGuard } from './core/guards/admin.guard';
                     },
                     {
                         path: 'ventas', loadChildren: () => import('./features/ventas/ventas.module').then(m => m.VentasModule),
-                        canActivate: [AuthGuard]
+                        canActivate: [AuthGuard, CajaGuard]
                     },
                     {
                         path: 'gastos', loadChildren: () => import('./features/gastos/gastos.module').then(m => m.GastosModule),
-                        canActivate: [AuthGuard]
+                        canActivate: [AuthGuard, CajaGuard]
                     },
                     {
                         path: 'cambiar-clave', loadChildren: () => import('./features/cambiar-clave/cambiar-clave.module').then(m => m.CambiarClaveModule),
@@ -79,7 +80,7 @@ import { AdminGuard } from './core/guards/admin.guard';
                     },
                     {
                         path: 'reportes', loadChildren: () => import('./features/reportes/reportes.module').then(m => m.ReportesModule),
-                        canActivate: [AuthGuard]
+                        canActivate: [AuthGuard, CajaGuard]
                     },
 
 

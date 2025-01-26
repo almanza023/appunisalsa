@@ -17,7 +17,7 @@
         <div class="card mb-0">
             <div class="flex justify-content-between mb-3">
                 <div>
-                    <span class="block text-500 font-medium mb-3">Pedidos Entregados</span>
+                    <span class="block text-500 font-medium mb-3">Pedidos Facturados</span>
                     <div class="text-900 font-medium text-xl">
                         {{totalPedidosEntregados}}
                     </div>
@@ -27,7 +27,7 @@
     </div>
 
     <!-- Opciones adicionales para rol 1 (administrador) -->
-    <div class="col-12 md:col-6 xl:col-3" *ngIf="rol=='1'">
+    <div class="col-12 md:col-6 xl:col-3" *ngIf="rol=='1' || rol=='3' ">
         <div class="card mb-0">
             <div class="flex justify-content-between mb-3">
                 <div>
@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <div class="col-12 md:col-6 xl:col-3" *ngIf="rol=='1'">
+    <div class="col-12 md:col-6 xl:col-3" *ngIf="rol=='1' || rol=='3' ">
         <div class="card mb-0">
             <div class="flex justify-content-between mb-3">
                 <div>
@@ -58,28 +58,20 @@
     <div class="col-12 md:col-6">
         <div class="card">
             <h5>Pedidos Activos por Mesa</h5>
-            <p-table [value]="pedidosActivos" responsiveLayout="scroll">
+            <p-table [value]="pedidos" responsiveLayout="scroll">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Mesa</th>
-                        <th>N° Comanda</th>
-                        <th>Estado</th>
-                        <th>Total</th>
-                        <th>Acciones</th>
+                        <th>Atiende</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-pedido>
                     <tr>
-                        <td>{{ pedido.mesa?.nombre }}</td>
-                        <td>{{ pedido.comanda }}</td>
-                        <td>{{ pedido.estado?.nombre }}</td>
-                        <td>{{ pedido.total | currency }}</td>
-                        <td>
-                            <button pButton pRipple icon="pi pi-eye"
-                                    class="p-button-rounded p-button-info mr-2"
-                                    (click)="verPedido(pedido.id)">
-                            </button>
-                        </td>
+                        <td>{{ pedido.nombre }}</td>
+                        <td>{{ pedido.usuario }}</td>
+                    <td>
+                        <p-button label="Ver Pedido" icon="pi pi-eye" (click)="getPedido(pedido.pedido_id)" class="p-button-info"></p-button>
+                    </td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -105,7 +97,7 @@
                     </button>
                 </div>
                 <!-- Botones adicionales para rol 1 (administrador) -->
-                <div class="col-12 md:col-6" *ngIf="rol=='1'">
+                <div class="col-12 md:col-6" *ngIf="rol=='1' || rol=='3' ">
                     <button pButton pRipple label="Reporte del Día"
                             icon="pi pi-chart-bar"
                             class="p-button-warning w-full"

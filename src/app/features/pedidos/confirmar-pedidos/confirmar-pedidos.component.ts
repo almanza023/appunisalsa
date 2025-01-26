@@ -87,6 +87,7 @@ export class ConfirmarPedidosComponent implements OnInit {
     }
 
     getMesas() {
+        this.mesas=[];
         this.mesaService.getMesasPedidosActivos().subscribe(
             (response) => {
                 //console.log(response.data);
@@ -283,12 +284,12 @@ entregarPedido(item:any){
 }
 
 calcularTotal() {
-    this.totalpedido=this.detalles.reduce(
-        (total, detalle) => total + detalle.total_subtotal,
+    this.totalpedido=this.detallesPedido.reduce(
+        (total, detalle) => Number(total) + Number(detalle.total_subtotal),
         0
     );
-    this.totalcantidad=this.detalles.reduce(
-        (total, detalle) => total + detalle.total_cantidad,
+    this.totalcantidad=this.detallesPedido.reduce(
+        (total, detalle) => Number(total) + Number(detalle.total_cantidad),
         0
     );
     return this.totalpedido;

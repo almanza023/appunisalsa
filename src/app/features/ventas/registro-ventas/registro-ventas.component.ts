@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { finalize } from 'rxjs';
-import { MesasService } from 'src/app/core/services/mesas.service';
+
 import { PedidosService } from 'src/app/core/services/pedidos.service';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { VentasService } from 'src/app/core/services/ventas.service';
@@ -41,6 +41,7 @@ export class RegistroVentasComponent implements OnInit {
     tipopago:any={};
     productosDetalles:any=[];
     observaciones:string="";
+    ventaReport:any;
 
     formatDate(date: Date): string {
         const day = String(date.getDate()).padStart(2, '0');
@@ -63,9 +64,11 @@ export class RegistroVentasComponent implements OnInit {
     @ViewChild(SelectorMesaComponent) mesaComponent: SelectorMesaComponent;
 
     ngOnInit() {
-        this.consultar();
+
         this.today = this.formatDate(new Date());
         this.todayF = this.formatDate(new Date(Date.now() + 86400000)); // Sumar 1 día a la fecha actual
+
+        this.consultar();
     }
 
     consultar(){
@@ -91,8 +94,8 @@ export class RegistroVentasComponent implements OnInit {
             });
             return;
         }
-        this.pedido.fecha_inicio = this.formatDate(new Date(this.today));
-        this.pedido.fecha_final=this.formatDate(new Date(this.todayF));
+        this.pedido.fecha_inicio = this.today;
+        this.pedido.fecha_final=this.todayF;
         this.pedido.estadopedido_id=2; //Cerrado
         this.getPedidosCerrados(this.pedido);
     }
@@ -124,10 +127,20 @@ export class RegistroVentasComponent implements OnInit {
     }
 
     getPedidosCerrados(item:any) {
+        this.pedidosCerrados=[];
         this.pedidosService.postPedidosCerrados(item).subscribe(
             (response) => {
                 //console.log(response.data);
                 this.pedidosCerrados = response.data;
+                if(this.pedidosCerrados.length==0){
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Advertencia',
+                        detail: response.message,
+                        life: 3000,
+                    });
+                }
+
             },
             (error) => {
                 this.messageService.add({
@@ -152,6 +165,7 @@ export class RegistroVentasComponent implements OnInit {
         }
         this.detallesPedido=[];
         this.infoPedido={};
+        this.tipopago={};
         this.pedidosService.getById(pedido_id)
         .subscribe(
             (response) => {
@@ -165,6 +179,7 @@ export class RegistroVentasComponent implements OnInit {
                     subtotal: detalle.total_subtotal
                 }));
                 this.infoPedido=response.data.pedido;
+
             },
             (error) => {
                 this.messageService.add({
@@ -322,11 +337,11 @@ entregarPedido(item:any){
 
 calcularTotal() {
     this.totalpedido=this.detallesPedido.reduce(
-        (total, detalle) => total + detalle.total_subtotal,
+        (total, detalle) => Number(total) + Number(detalle.total_subtotal),
         0
     );
     this.totalcantidad=this.detallesPedido.reduce(
-        (total, detalle) => total + detalle.total_cantidad,
+        (total, detalle) => Number(total) + Number(detalle.total_cantidad),
         0
     );
     return this.totalpedido;
@@ -418,12 +433,13 @@ this.venta.pagos=this.pagos;
 this.venta.observaciones=this.observaciones;
 
 this.ventasService.postData(this.venta)
-        .pipe(finalize(() => this.consultar()))
+        //.pipe(finalize(() => this.consultar()))
         .subscribe(
             (response) => {
                 let severity = '';
                 let summary = '';
                 if (response.isSuccess == true) {
+                    this.ventaReport=response.data;
                     severity = 'success';
                     summary = 'Exitoso';
                 } else {
@@ -481,13 +497,15 @@ agregarPagoTotal() {
         tipo: this.tipopago.nombre, // Usar el tipo de pago seleccionado
         valor: saldoPendiente
     });
+}
+calcularCambio(): number {
+    const totalPagos = this.pagos.reduce((acc, pago) => acc + pago.valor, 0);
+    const saldoPendiente = this.calcularTotal() - totalPagos;
 
-    this.messageService.add({
-        severity: 'success',
-        summary: 'Éxito',
-        detail: 'Pago total agregado correctamente.',
-        life: 3000,
-    });
+    if (saldoPendiente < 0) {
+        return Math.abs(saldoPendiente); // Retorna el cambio a devolver
+    }
+    return 0; // No hay cambio si el saldo pendiente es 0 o positivo
 }
 
 

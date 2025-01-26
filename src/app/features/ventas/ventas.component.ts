@@ -33,7 +33,10 @@ export class VentasComponent {
     totalpedido:any=0;
     totalcantidad:any=0;
     nombreModulo: string = 'Módulo de Ventas';
-
+    startDate:any;
+    endDate:any;
+    filter:any={};
+    dataReport:any;
 
 
     constructor(
@@ -45,13 +48,13 @@ export class VentasComponent {
 
 
     ngOnInit() {
-        this.getDataAll();
+        this.getDataAll(this.filter);
         this.cols = [ ];
         this.statuses = [];
     }
 
-    getDataAll() {
-        this.service.getAll().subscribe(
+    getDataAll(item:any) {
+        this.service.postFilter(item).subscribe(
             (response) => {
                 //console.log(response.data);
                 this.data = response.data;
@@ -65,6 +68,22 @@ export class VentasComponent {
                 });
             }
         );
+    }
+
+    filtrarPorFecha(){
+        if (this.startDate && !this.endDate) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Si ingresa Fecha Inicial debe ingresar también Fecha Final',
+                life: 3000
+            });
+            return;
+        }
+        let data:any = {
+            fecha_inicio: this.startDate,
+            fecha_fin: this.endDate
+        };
     }
 
 
@@ -89,7 +108,7 @@ export class VentasComponent {
         this.deleteProductDialog = false;
         this.service
             .postEstado(this.pedido.id)
-            .pipe(finalize(() => this.getDataAll()))
+            .pipe(finalize(() => this.getDataAll(this.filter)))
             .subscribe(
                 (response) => {
                     let severity = '';
@@ -129,6 +148,13 @@ export class VentasComponent {
         this.clienteDialog=true;
         this.detalles=item.detalles;
         this.pagos=item.pagos;
+        this.dataReport={
+            'venta':item,
+            'pedido':item.pedido,
+            'detalles':this.detalles,
+            'pagos':this.pagos,
+        }
+
     }
 
     calcularTotal() {
@@ -148,6 +174,10 @@ export class VentasComponent {
             (event.target as HTMLInputElement).value,
             'contains'
         );
+    }
+
+    calcularTotalVentas(){
+        return this.data.reduce((acc, item) => acc + item.total, 0);
     }
 
 

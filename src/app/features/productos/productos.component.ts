@@ -32,6 +32,9 @@ export class ProductosComponent {
     posiciones:any[]=[];
     posicion:any={};
     selectedFile: File | null = null;
+    movimientos:any=[];
+    displayMovimientosDialog:boolean=false;
+    nombreProducto:string;
 
 
     nombreModulo: string = 'Módulo de Productos';
@@ -296,6 +299,31 @@ onImageSelected(event: any) {
 
 
     }
+}
+
+verHistorialMovimiento(producto_id:any, nombre:string){
+    let item={
+        producto_id
+    };
+    this.nombreProducto=nombre;
+
+    this.service
+            .postMovimientos(item)
+            .subscribe(
+                (response) => {
+                    this.displayMovimientosDialog=true;
+                    this.movimientos=response.data;
+                },
+                (error) => {
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Advertencia',
+                        detail: error.error.data,
+                        life: 3000,
+                    });
+                }
+            );
+
 }
 
 

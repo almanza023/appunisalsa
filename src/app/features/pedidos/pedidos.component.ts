@@ -39,7 +39,7 @@ export class PedidosComponent {
     fechaInicial:any;
     fechaFinal:any;
     filtroUser:string;
-
+    rol:string;
 
 
     constructor(
@@ -51,13 +51,14 @@ export class PedidosComponent {
 
 
     ngOnInit() {
+        this.rol = localStorage.getItem('rol');
         this.buscar();
         this.cols = [ ];
         this.statuses = [];
     }
 
     buscar(){
-         let rol = localStorage.getItem('rol');
+        let rol = localStorage.getItem('rol');
         if (this.fechaInicial && !this.fechaFinal) {
             this.messageService.add({
                 severity: 'warn',
@@ -74,13 +75,26 @@ export class PedidosComponent {
 
         if(rol != "1") {
             data.user_id = localStorage.getItem('user_id');
+            data.estadopedido_id=1;
         }else{
             data.user_id = this.filtroUser;
+            data.estadopedido_id=null;
+            //Para Mostrar Todoslos estados
+
         }
+        this.data=[];
         this.service.postFilter(data)
         .subscribe(
             (response) => {
                 this.data = response.data;
+                if(this.data.length==0){
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Advertencia',
+                        detail: "No existen pedidos Pendientes",
+                        life: 3000,
+                    });
+                }
             },
             (error) => {
                 this.messageService.add({
@@ -171,11 +185,11 @@ export class PedidosComponent {
 
     calcularTotal() {
         this.totalpedido=this.detalles.reduce(
-            (total, detalle) => total + detalle.total_subtotal,
+            (total, detalle) => Number(total) + Number(detalle.total_subtotal),
             0
         );
         this.totalcantidad=this.detalles.reduce(
-            (total, detalle) => total + detalle.total_cantidad,
+            (total, detalle) => Number(total) + Number(detalle.total_cantidad),
             0
         );
         return this.totalpedido;

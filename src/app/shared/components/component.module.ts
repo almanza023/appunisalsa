@@ -36,6 +36,10 @@ import { SelectorTiPoPagoComponent } from './selector-tipo-pago/selector-tipo-pa
 import { SelectorTiPoGastoComponent } from './selector-tipo-gasto/selector-tipo-gasto.component';
 import { SelectorProveedorComponent } from './selector-proveedor/selector-proveedor.component';
 import { SelectorUserComponent } from './selector-user/selector-user.component';
+import { TicketposComponent } from './ticketpos/ticketpos.component';
+import { TicketAperturaCajaComponent } from './ticket-apertura-caja/ticket-apertura-caja.component';
+import { TicketPosDetalleComponent } from './ticketpos-detalle/ticketpos-detalle.component';
+import { TickekCierreCajaComponent } from './ticket-cierre-caja/ticket-cierre-caja.component';
 
 
 
@@ -50,7 +54,10 @@ import { SelectorUserComponent } from './selector-user/selector-user.component';
     SelectorMesaComponent,
     SelectorTiPoPagoComponent,
     SelectorTiPoGastoComponent,
-    SelectorUserComponent
+    SelectorUserComponent,
+    TicketposComponent,
+    TicketAperturaCajaComponent, TicketPosDetalleComponent,
+    TickekCierreCajaComponent
   ],
   imports: [
     CommonModule,
@@ -71,7 +78,9 @@ import { SelectorUserComponent } from './selector-user/selector-user.component';
     SelectorEstadoComponent,
     SelectorProveedorComponent, SelectorTiPoGastoComponent,
     LoadingComponent, SelectorMesaComponent, ConfirmDialogModule, SelectorTiPoPagoComponent,
-    SelectorUserComponent
+    SelectorUserComponent,TicketposComponent,
+    TicketAperturaCajaComponent, TicketPosDetalleComponent,
+    TickekCierreCajaComponent
   ]
 })
 export class ComponentModule { }

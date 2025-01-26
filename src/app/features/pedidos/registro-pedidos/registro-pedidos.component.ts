@@ -28,11 +28,13 @@ export class RegistroPedidosComponent implements OnInit {
     pedido_id: string = '';
 
     infoPedido: any = {};
-    totalpedido: any = 0;
-    totalcantidad: any = 0;
+    totalpedido: number = 0;
+    totalcantidad: number = 0;
 
     pendienteDialog: boolean = false;
     pendientes: any = [];
+    id:string="";
+    cambioMesa:boolean=false;
 
     constructor(
         private productoService: ProductosService,
@@ -46,6 +48,7 @@ export class RegistroPedidosComponent implements OnInit {
     @ViewChild(SelectorMesaComponent) mesaComponent: SelectorMesaComponent;
 
     ngOnInit() {
+        this.id = this.route.snapshot.paramMap.get('id');
         this.pedido_id = this.route.snapshot.paramMap.get('id');
         this.today = this.formatDate(new Date());
         this.getProductos();
@@ -129,11 +132,11 @@ export class RegistroPedidosComponent implements OnInit {
 
     calcularTotal() {
         this.totalpedido = this.detalles.reduce(
-            (total, detalle) => total + detalle.total_subtotal,
+            (total, detalle) => Number(total) + Number(detalle.total_subtotal),
             0
         );
         this.totalcantidad = this.detalles.reduce(
-            (total, detalle) => total + detalle.total_cantidad,
+            (total, detalle) => Number(total) + Number(detalle.total_cantidad),
             0
         );
         return this.totalpedido;
@@ -143,7 +146,7 @@ export class RegistroPedidosComponent implements OnInit {
         this.productoService.getActive().subscribe(
             (response) => {
                 //console.log(response.data);
-                this.productos = response.data;
+                this.productos = response.data.filter(producto => producto.stock_actual > 0);
             },
             (error) => {
                 this.messageService.add({
@@ -201,6 +204,7 @@ export class RegistroPedidosComponent implements OnInit {
                     } else {
                         severity = 'warn';
                         summary = 'Advertencia';
+                        this.pedido_id = response.data.id;
                     }
                     this.messageService.add({
                         severity: severity,
@@ -211,9 +215,9 @@ export class RegistroPedidosComponent implements OnInit {
                 },
                 (error) => {
                     this.messageService.add({
-                        severity: 'warn',
+                        severity: 'error',
                         summary: 'Advertencia',
-                        detail: error.error.data,
+                        detail: "Error al obtener datos",
                         life: 3000,
                     });
                 }
@@ -229,7 +233,7 @@ export class RegistroPedidosComponent implements OnInit {
                     severity = 'success';
                     summary = 'Exitoso';
                     this.detalles = response.data;
-                    this.displayDialog = false;
+                    //this.displayDialog = false;
                 } else {
                     severity = 'warn';
                     summary = 'Advertencia';
@@ -319,6 +323,51 @@ export class RegistroPedidosComponent implements OnInit {
     }
 
     actualizarPedido() {
-        location.reload(); // Recargar la página
+        this.router.navigateByUrl('/', {skipLocationChange:true}).then(()=>{
+            this.router.navigate(['pedidos/registro/'+this.pedido_id]);
+        })
     }
+
+    cambiarMesa(){
+        this.mesaComponent.disabled=false
+        this.cambioMesa=true;
+    }
+
+    actualizarMesa(){
+        let item={
+            pedido_id: this.pedido_id,
+            mesa_id: this.pedido.mesa_id
+        }
+        this.pedidosService.postCambioMesa(item).subscribe(
+            (response) => {
+                let severity = '';
+                let summary = '';
+                if (response.isSuccess) {
+                    severity = 'success';
+                    summary = 'Exitoso';
+                    this.cambioMesa=false;
+                    this.mesaComponent.disabled=true;
+                } else {
+                    severity = 'warn';
+                    summary = 'Advertencia';
+
+                }
+                this.messageService.add({
+                    severity: severity,
+                    summary: summary,
+                    detail: response.message,
+                    life: 3000,
+                });
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Advertencia',
+                    detail: "Error al Enviar Datos",
+                    life: 3000,
+                });
+            }
+        );
+    }
+
 }

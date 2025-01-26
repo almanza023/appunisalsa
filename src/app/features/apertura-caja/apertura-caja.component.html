@@ -126,6 +126,7 @@
                                     icon="pi pi-check"
                                     styleClass="p-button-rounded p-button-warning"
                                 ></p-button>
+                            <app-ticket-apertura-caja *ngIf="item.estado==1"  [data]="item"></app-ticket-apertura-caja>
                             </div>
                         </td>
                     </tr>
@@ -171,6 +172,7 @@
                             type="number"
                             pInputText
                             [(ngModel)]="caja.monto_inicial"
+                            step="0.01"
                         />
                     </div>
                 </div>

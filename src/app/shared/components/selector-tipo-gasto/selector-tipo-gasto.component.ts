@@ -43,7 +43,7 @@ export class SelectorTiPoGastoComponent {
 
   filtrar(valor:any) {
     if(valor){
-     this.seleccionado= this.items.find(objeto => objeto['id'] === valor);
+     this.seleccionado= this.items.find(objeto => objeto['id'] == valor);
     }
    }
 
