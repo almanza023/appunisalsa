@@ -117,6 +117,11 @@ export class AppMenuComponent implements OnInit {
                         icon: 'pi pi-fw pi-align-justify',
                         command: () => this.reloadCurrentRoute('compras')
                     },
+                    {
+                        label: 'Actualizar Stock',
+                        icon: 'pi pi-fw pi-align-justify',
+                        command: () => this.reloadCurrentRoute('compras/actualizar-stock')
+                    },
                 ]
             };
 
