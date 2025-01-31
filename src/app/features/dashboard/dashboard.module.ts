@@ -11,21 +11,23 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { DashboardsRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { ToastModule } from 'primeng/toast';
+import { ComponentModule } from "../../shared/components/component.module";
 
 
 @NgModule({
     imports: [
-        CommonModule,
-        FormsModule,
-        ChartModule,
-        MenuModule,
-        TableModule,
-        StyleClassModule,
-        PanelMenuModule,
-        ButtonModule,
-        ToastModule,
-        DashboardsRoutingModule
-    ],
+    CommonModule,
+    FormsModule,
+    ChartModule,
+    MenuModule,
+    TableModule,
+    StyleClassModule,
+    PanelMenuModule,
+    ButtonModule,
+    ToastModule,
+    DashboardsRoutingModule,
+    ComponentModule
+],
     declarations: [DashboardComponent]
 })
 export class DashboardModule { }

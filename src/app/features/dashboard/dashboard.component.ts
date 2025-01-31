@@ -22,10 +22,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     totalVentasDia: number = 0;
     productosBajosStock: number = 0;
     pedidos:any=[];
+    productos:any=[];
     constructor(
         private service: AperturaCajaService,
          public layoutService: LayoutService,
          public messageService: MessageService,
+         public productoService: ProductosService,
          private mesaService: MesasService,
          private router: Router,
          ) {
@@ -34,6 +36,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getDataAll();
+        this.getProductosInventario();
 
     }
 
@@ -121,6 +124,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     getPedido(id:any){
         this.router.navigate(['/pedidos/registro/'+id]);
+    }
+
+    getProductosInventario() {
+        this.productoService.getProductoInventario().subscribe(
+            (response) => {
+                //console.log(response.data);
+                this.productos = response.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: 'Advertencia',
+                    detail: error.error.data,
+                    life: 3000,
+                });
+            }
+        );
     }
 
 

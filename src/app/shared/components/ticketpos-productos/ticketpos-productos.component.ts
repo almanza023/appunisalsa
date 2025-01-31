@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-ticketpos-detalle',
-  templateUrl: './ticketpos-detalle.component.html'
+  selector: 'app-ticketpos-productos',
+  templateUrl: './ticketpos-productos.component.html'
 })
-export class TicketPosDetalleComponent implements OnInit {
+export class TicketPosProductosComponent implements OnInit {
 
   tienda: string = 'LA U DE LA SALSA';
     direccion: string = 'Sincelejo - Sucre';

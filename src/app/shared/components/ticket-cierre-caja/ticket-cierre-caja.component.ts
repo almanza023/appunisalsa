@@ -7,8 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 export class TickekCierreCajaComponent implements OnInit {
 
   tienda: string = 'LA U DE LA SALSA';
-    direccion: string = 'Dirección Tienda';
-    telefono: string = '123456789';
+    direccion: string = 'Sincelejo - Sucre';
+    telefono: string = '3115049745';
     @Input() data: any = 0;
     fechaActual = new Date();
   constructor() { }

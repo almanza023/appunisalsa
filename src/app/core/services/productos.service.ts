@@ -70,6 +70,12 @@ export class ProductosService {
     return this.http.post<any>(url, item, {headers});
   }
 
+  getProductoInventario(): Observable<any> {
+    const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
+    let url=`${environment.baseURL}/productos-inventario`;
+    return this.http.get<any>(url, {headers});
+  }
+
 
 
 

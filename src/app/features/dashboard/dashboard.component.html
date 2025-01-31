@@ -118,6 +118,9 @@
                             (click)="gestionarUsuarios()">
                     </button>
                 </div>
+                <div class="col-12 md:col-6" *ngIf="rol=='1' || rol=='3' ">
+                   <app-ticketpos-productos [data]="productos"></app-ticketpos-productos>
+                </div>
             </div>
         </div>
     </div>

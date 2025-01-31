@@ -40,6 +40,7 @@ import { TicketposComponent } from './ticketpos/ticketpos.component';
 import { TicketAperturaCajaComponent } from './ticket-apertura-caja/ticket-apertura-caja.component';
 import { TicketPosDetalleComponent } from './ticketpos-detalle/ticketpos-detalle.component';
 import { TickekCierreCajaComponent } from './ticket-cierre-caja/ticket-cierre-caja.component';
+import { TicketPosProductosComponent } from './ticketpos-productos/ticketpos-productos.component';
 
 
 
@@ -57,7 +58,8 @@ import { TickekCierreCajaComponent } from './ticket-cierre-caja/ticket-cierre-ca
     SelectorUserComponent,
     TicketposComponent,
     TicketAperturaCajaComponent, TicketPosDetalleComponent,
-    TickekCierreCajaComponent
+    TickekCierreCajaComponent,
+    TicketPosProductosComponent
   ],
   imports: [
     CommonModule,
@@ -80,7 +82,7 @@ import { TickekCierreCajaComponent } from './ticket-cierre-caja/ticket-cierre-ca
     LoadingComponent, SelectorMesaComponent, ConfirmDialogModule, SelectorTiPoPagoComponent,
     SelectorUserComponent,TicketposComponent,
     TicketAperturaCajaComponent, TicketPosDetalleComponent,
-    TickekCierreCajaComponent
+    TickekCierreCajaComponent, TicketPosProductosComponent
   ]
 })
 export class ComponentModule { }
