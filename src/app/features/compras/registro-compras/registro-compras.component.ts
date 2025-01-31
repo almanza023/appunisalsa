@@ -172,11 +172,11 @@ export class RegistroComprasComponent implements OnInit {
     calcularTotal() {
         if (this.detalles && this.detalles.length > 0) {
             this.totalcompra = this.detalles.reduce(
-                (total, detalle) => total + detalle.total_subtotal,
+                (total, detalle) => Number(total) + Number(detalle.total_subtotal),
                 0
             );
             this.totalcantidad = this.detalles.reduce(
-                (total, detalle) => total + detalle.total_cantidad,
+                (total, detalle) => Number(total) + Number(detalle.total_cantidad),
                 0
             );
             return this.totalcompra;
