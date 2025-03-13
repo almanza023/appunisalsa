@@ -91,6 +91,12 @@ export class PedidosService {
     return this.http.post<any>(url, item, {headers});
   }
 
+  postEntregaTodos(data:any): Observable<any> {
+    const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
+    let url=`${environment.baseURL}/pedidos-entrega-todos`;
+    return this.http.post<any>(url, data, {headers});
+  }
+
 
 
 

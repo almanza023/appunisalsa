@@ -295,4 +295,67 @@ calcularTotal() {
     return this.totalpedido;
 }
 
+confirmTodos() {
+    this.confirmationService.confirm({
+        message: '¿Está seguro de entregar todos los productos para la ' + this.mesa + ' ?',
+        header: 'Confirmación',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Aceptar', // Texto del botón Aceptar
+        rejectLabel: 'Cancelar', // Texto del botón Cancelar
+        accept: () => {
+            this.crearEntregaTodos();
+        },
+        reject: (type) => {
+            switch (type) {
+                case ConfirmEventType.REJECT:
+                    break;
+                case ConfirmEventType.CANCEL:
+                    break;
+            }
+        }
+    });
+}
+
+crearEntregaTodos() {
+    let itemMesa={
+        id:this.mesa_id,
+        nombre:this.mesa
+    };
+    let user_id=localStorage.getItem('user_id');
+    let data={
+        user_id,
+        pedido_id:this.pedido_id,
+    };
+
+    this.pedidosService.postEntregaTodos(data)
+    .pipe(finalize(() => this.verPedido(this.mesa_id, this.mesa, this.pedido_id)))
+    .subscribe(
+        (response) => {
+            let severity = '';
+            let summary = '';
+            if (response.isSuccess == true) {
+                severity = 'success';
+                summary = 'Exitoso';
+            } else {
+                severity = 'warn';
+                summary = 'Advertencia';
+            }
+            this.messageService.add({
+                severity: severity,
+                summary: summary,
+                detail: response.message,
+                life: 3000,
+            });
+        },
+        (error) => {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: error.error.data,
+                life: 3000,
+            });
+        }
+    );
+}
+
 }

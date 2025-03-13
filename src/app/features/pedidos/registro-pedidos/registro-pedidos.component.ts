@@ -160,23 +160,25 @@ export class RegistroPedidosComponent implements OnInit {
     }
 
     getPedido(pedido_id: any) {
-        this.pedidosService
-            .getById(pedido_id)
-            .pipe(finalize(() => this.mapearDatos()))
-            .subscribe(
-                (response) => {
-                    //console.log(response.data);
-                    this.infoPedido = response.data;
-                },
-                (error) => {
-                    this.messageService.add({
-                        severity: 'warn',
-                        summary: 'Advertencia',
-                        detail: error.error.data,
-                        life: 3000,
-                    });
-                }
-            );
+        if (pedido_id && pedido_id !== '0') {
+            this.pedidosService
+                .getById(pedido_id)
+                .pipe(finalize(() => this.mapearDatos()))
+                .subscribe(
+                    (response) => {
+                        //console.log(response.data);
+                        this.infoPedido = response.data;
+                    },
+                    (error) => {
+                        this.messageService.add({
+                            severity: 'warn',
+                            summary: 'Advertencia',
+                            detail: error.error.data,
+                            life: 3000,
+                        });
+                    }
+                );
+        }
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -204,7 +206,7 @@ export class RegistroPedidosComponent implements OnInit {
                     } else {
                         severity = 'warn';
                         summary = 'Advertencia';
-                        this.pedido_id = response.data.id;
+                        this.pedido_id = '';
                     }
                     this.messageService.add({
                         severity: severity,
@@ -279,6 +281,7 @@ export class RegistroPedidosComponent implements OnInit {
                     summary = 'Advertencia';
                     this.pendientes = response.data;
                     this.pendienteDialog = true;
+
                 }
                 this.messageService.add({
                     severity: severity,
@@ -336,6 +339,7 @@ export class RegistroPedidosComponent implements OnInit {
     actualizarMesa(){
         let item={
             pedido_id: this.pedido_id,
+            comanda: this.pedido.comanda,
             mesa_id: this.pedido.mesa_id
         }
         this.pedidosService.postCambioMesa(item).subscribe(

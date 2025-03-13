@@ -2,12 +2,14 @@ import { Component, SimpleChanges, ViewChild } from '@angular/core';
 import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 import { AperturaCajaService } from 'src/app/core/services/apertura-caja.service';
+import { LoadingComponent } from "../../../shared/components/loading/loading.component";
 
 
 @Component({
   selector: 'app-reporte-dia',
   templateUrl: './reporte-dia.component.html',
   providers: [MessageService, ConfirmationService],
+
 })
 export class ReporteDiaComponent {
 
@@ -20,6 +22,7 @@ export class ReporteDiaComponent {
     historialDialog:boolean=false;
     historial:any=[];
     dataReport:any;
+    loading:boolean=false;
 
     ngOnInit(): void {
         this.today = this.formatDate(new Date());
@@ -70,14 +73,11 @@ export class ReporteDiaComponent {
 
     getData(item:any) {
         this.data=[];
+        this.loading=true;
+       setTimeout(() => {
         this.service.postDia(item).subscribe(
             (response) => {
-                //console.log(response.data);
                 this.data = response.data;
-
-
-
-
                 if(this.data.length==0){
                     this.messageService.add({
                         severity: 'warn',
@@ -85,6 +85,7 @@ export class ReporteDiaComponent {
                         detail:"No Existen Datos",
                         life: 3000,
                     });
+                    this.loading=false;
                     return;
                 }else{
                     this.dataReport = {
@@ -140,7 +141,7 @@ export class ReporteDiaComponent {
                         },[]),
 
                     };
-                    console.log(this.dataReport);
+                    this.loading=false;
                 }
 
             },
@@ -151,8 +152,10 @@ export class ReporteDiaComponent {
                     detail:"Error al obtener datos",
                     life: 3000,
                 });
+                this.loading=false;
             }
         );
+       }, 2000);
     }
 
     cerrarCaja(item:any){
@@ -176,8 +179,9 @@ export class ReporteDiaComponent {
             totalventas:item.totalventas,
             utilidad:item.totalneto,
         }
-
-        this.service.putData(data.caja_id, data)
+        this.loading=true;
+        setTimeout(() => {
+            this.service.putData(data.caja_id, data)
         .pipe(finalize(() => this.getData(this.filter)))
         .subscribe(
             (response) => {
@@ -196,6 +200,7 @@ export class ReporteDiaComponent {
                     detail: response.message,
                     life: 3000,
                 });
+                this.loading=false;
             },
             (error) => {
                 this.messageService.add({
@@ -204,8 +209,10 @@ export class ReporteDiaComponent {
                     detail: "Error al Enviar Datos",
                     life: 3000,
                 });
+                this.loading=false;
             }
         );
+        }, 2000);
     }
 
     confirm1(item:any) {

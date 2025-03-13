@@ -127,7 +127,7 @@
 
                         <td style="width: 26%; min-width: 10rem">
                             <span class="p-column-title">Estado</span>
-                            {{ item.estado === 1 ? 'CREADA' : item.estado === 2 ? 'FINALIZADO' : 'ANULADA' }}
+                            {{ item.estado == 1 ? 'CREADA' : item.estado == 2 ? 'FINALIZADO' : 'ANULADA' }}
                         </td>
                         <td>
                             <div class="flex">
@@ -189,7 +189,7 @@
 
             <div class="field">
                 <h3>Total a Pagar: {{ calcularTotal() | currency }}</h3>
-                <h3>Cantidad Productos: {{ totalcantidad  }}</h3>
+                <h3>Cantidad Productos: {{ totalcantidad | number  }}</h3>
             </div>
         </div>
         </div>

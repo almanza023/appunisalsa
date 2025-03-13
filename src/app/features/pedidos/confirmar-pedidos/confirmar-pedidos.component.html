@@ -32,6 +32,7 @@
             <tr>
               <th>Mesa</th>
               <th>N° Pedido</th>
+              <th>N° Comanda</th>
               <th>Atendido</th>
               <th>Opciones</th>
             </tr>
@@ -40,6 +41,7 @@
             <tr>
               <td>{{ item.nombre }}</td>
               <td>{{ item.pedido_id }}</td>
+              <td>{{ item.comanda }}</td>
               <td>{{item.usuario}}</td>
             <td>
               <p-button label="Ver" icon="pi pi-eye" (click)="verPedido(item.id, item.nombre, item.pedido_id)"></p-button>
@@ -55,6 +57,7 @@
         <div class="card">
           <h5>Detalle Pedido:  <b>{{mesa}}</b></h5>
           <h5>N° Pedido: {{pedido_id}}</h5>
+          <h5>N° Comanda: {{detalles[0]?.pedido?.comanda}}</h5>
             <p-button label="Ver Historial Entregas" icon="pi pi-eye" (click)="verHistorial()"></p-button>
             <button
             (click)="getPedido(pedido_id)"
@@ -64,6 +67,9 @@
             icon="pi pi-pencil"
             class="p-button-rounded p-button-success mr-2"
         ></button>
+
+        <p-button *ngIf="detalles.length > 0" label="Entregar Todos" icon="pi pi-check" (click)="confirmTodos()" styleClass="p-button-warning"></p-button>
+
           <p-table [value]="detalles" responsiveLayout="scroll">
             <ng-template pTemplate="header">
               <tr>

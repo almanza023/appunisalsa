@@ -27,7 +27,6 @@
                     <th>Producto</th>
                     <th>Cantidad</th>
                     <th>Precio Compra</th>
-                    <th>Precio Venta</th>
                     <th>Total</th>
                     <th>Acciones</th>
                 </tr>
@@ -37,7 +36,6 @@
                     <td>{{ detalle.producto.nombre }}</td>
                     <td>{{ detalle.total_cantidad }}</td>
                     <td>{{ detalle.precio | currency }}</td>
-                    <td>{{ detalle.precio_venta | currency }}</td>
                     <td>{{ detalle.total_subtotal | currency }}</td>
                     <td *ngIf=" compra.estado==1">
                         <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="quitarProducto(detalle.id)"></button>
