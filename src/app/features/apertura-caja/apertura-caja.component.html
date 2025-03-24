@@ -1,3 +1,4 @@
+<app-loading *ngIf="loading"></app-loading>
 <p-toast></p-toast>
 <div class="grid">
     <div class="col-12">
@@ -7,14 +8,23 @@
                     <h3>{{ nombreModulo }}</h3>
                 </div>
             </div>
-            <div class="field grid justify-content-start">
-                <div class="col-12 md:col-2">
-                    <p-button
-                        label="Crear"
-                        styleClass="p-button-success"
-                        icon="pi pi-plus"
-                        (click)="openNew()"
-                    ></p-button>
+            <div class="grid">
+                <div class="col-12 md:col-6 lg:col-6">
+                    <div class="flex gap-3">
+                        <p-button
+                            label="Crear"
+                            styleClass="p-button-success"
+                            icon="pi pi-plus"
+                            (click)="openNew()"
+                        ></p-button>
+
+                        <p-button
+                            label="Consultar"
+                            styleClass="p-button-info"
+                            icon="pi pi-refresh"
+                            (click)="getDataAll()"
+                        ></p-button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,6 +67,10 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
+                        <th pSortableColumn="id">
+                            Código Caja
+                            <p-sortIcon field="id"></p-sortIcon>
+                        </th>
                         <th pSortableColumn="fecha">
                             Fecha Apertura
                             <p-sortIcon field="fecha"></p-sortIcon>
@@ -90,6 +104,10 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-item>
                     <tr [ngStyle]="{'background-color': item.estado === 1 ? '#abebc6' : 'transparent'}">
+                        <td style="width: 10%; min-width: 10rem">
+                            <span class="p-column-title">Código Caja</span>
+                            {{ item.id }}
+                        </td>
                         <td style="width: 10%; min-width: 10rem">
                             <span class="p-column-title">Fecha Apertura</span>
                             {{ item.fecha }}
@@ -168,12 +186,15 @@
                         <b>Base Inicial</b>
                     </label>
                     <div class="col-12 md:col-12">
-                        <input
-                            type="number"
-                            pInputText
+                        <p-inputNumber
                             [(ngModel)]="caja.monto_inicial"
-                            step="0.01"
-                        />
+                            mode="decimal"
+                            [minFractionDigits]="0"
+                            [maxFractionDigits]="2"
+                            [showButtons]="false"
+                            [useGrouping]="true"
+                            placeholder="Ingrese monto"
+                        ></p-inputNumber>
                     </div>
                 </div>
 

@@ -35,6 +35,7 @@ export class RegistroPedidosComponent implements OnInit {
     pendientes: any = [];
     id:string="";
     cambioMesa:boolean=false;
+    disableButton:boolean=true;
 
     constructor(
         private productoService: ProductosService,
@@ -317,8 +318,10 @@ export class RegistroPedidosComponent implements OnInit {
             reject: (type) => {
                 switch (type) {
                     case ConfirmEventType.REJECT:
+                        this.disableButton=false;
                         break;
                     case ConfirmEventType.CANCEL:
+                        this.disableButton=true;
                         break;
                 }
             },
@@ -328,6 +331,12 @@ export class RegistroPedidosComponent implements OnInit {
     actualizarPedido() {
         this.router.navigateByUrl('/', {skipLocationChange:true}).then(()=>{
             this.router.navigate(['pedidos/registro/'+this.pedido_id]);
+        })
+    }
+
+    nuevoPedido() {
+        this.router.navigateByUrl('/', {skipLocationChange:true}).then(()=>{
+            this.router.navigate(['pedidos/registro/0']);
         })
     }
 

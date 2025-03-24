@@ -73,6 +73,17 @@ export class AperturaCajaService {
     return this.http.post<any>(url, item, {headers});
   }
 
+  getReporteCaja(item:any): Observable<any> {
+    const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
+    let url=`${environment.baseURL}/reporte-caja`;
+    return this.http.post<any>(url, item, {headers});
+  }
+
+  getCajaAbierta(): Observable<any> {
+    const headers = { 'Authorization': 'Bearer '+localStorage.getItem('token') }
+    let url=`${environment.baseURL}/apertura-ultima-caja-abierta`;
+    return this.http.get<any>(url, {headers});
+  }
 
 
 

@@ -48,10 +48,14 @@ export class PedidosComponent {
         private messageService: MessageService
     ) {}
 
-
-
     ngOnInit() {
         this.rol = localStorage.getItem('rol');
+// Set fechaInicial to the first day of current month
+const today = new Date();
+this.fechaInicial = new Date(today.getFullYear(), today.getMonth(), 1);
+this.fechaFinal = new Date();
+
+
         this.buscar();
         this.cols = [ ];
         this.statuses = [];

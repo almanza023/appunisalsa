@@ -42,6 +42,9 @@ export class RegistroVentasComponent implements OnInit {
     productosDetalles:any=[];
     observaciones:string="";
     ventaReport:any;
+    loading:boolean=false;
+    disableButton:boolean=true;
+
 
     formatDate(date: Date): string {
         const day = String(date.getDate()).padStart(2, '0');
@@ -302,6 +305,7 @@ confirm1() {
         reject: (type) => {
             switch (type) {
                 case ConfirmEventType.REJECT:
+                    this.disableButton=false;
                     break;
                 case ConfirmEventType.CANCEL:
                     break;
@@ -322,6 +326,9 @@ verPedido(id:any, nombre:string, idpedido:any){
     };
     //this.getDetallePedidoMesa(data);
     this.getPedido(idpedido);
+    this.disableButton=true;
+    this.pagos=[];
+
 }
 
 entregarPedido(item:any){
@@ -421,48 +428,68 @@ quitarPago(pago: any) {
     });
 }
 
-finalizarVenta(){
-this.venta.user_id=localStorage.getItem('user_id');
-this.venta.cliente_id=1;
-this.venta.fecha=this.today;
-this.venta.total=this.totalpedido;
-this.venta.cantidad=this.totalcantidad;
-this.venta.pedido_id=this.pedido_id;
-this.venta.detalles=this.productosDetalles;
-this.venta.pagos=this.pagos;
-this.venta.observaciones=this.observaciones;
+finalizarVenta() {
+    this.venta.user_id = localStorage.getItem('user_id');
+    this.venta.cliente_id = 1;
+    this.venta.fecha = this.today;
+    this.venta.total = this.totalpedido;
+    this.venta.cantidad = this.totalcantidad;
+    this.venta.pedido_id = this.pedido_id;
+    this.venta.detalles = this.productosDetalles;
+    this.venta.pagos = this.pagos;
+    this.venta.observaciones = this.observaciones;
+    this.loading = true;
+    this.disableButton = false;
 
-this.ventasService.postData(this.venta)
-        //.pipe(finalize(() => this.consultar()))
-        .subscribe(
-            (response) => {
-                let severity = '';
-                let summary = '';
-                if (response.isSuccess == true) {
-                    this.ventaReport=response.data;
-                    severity = 'success';
-                    summary = 'Exitoso';
-                } else {
-                    severity = 'warn';
-                    summary = 'Advertencia';
+    setTimeout(() => {
+        this.ventasService.postData(this.venta)
+            .subscribe(
+                (response) => {
+                    let severity = '';
+                    let summary = '';
+                    if (response.isSuccess == true) {
+                        this.ventaReport = response.data;
+                        severity = 'success';
+                        summary = 'Exitoso';
+                        // Imprimir ticket automáticamente
+                        setTimeout(() => {
+                            const ticketElement = document.getElementById('ticket-pos');
+                            if (ticketElement) {
+                                const printWindow = window.open('', '_blank');
+                                printWindow.document.write('<html><head><title>Ticket de Venta</title>');
+                                printWindow.document.write('<style>body { font-family: monospace; }</style>');
+                                printWindow.document.write('</head><body>');
+                                printWindow.document.write(ticketElement.innerHTML);
+                                printWindow.document.write('</body></html>');
+                                printWindow.document.close();
+                                printWindow.print();
+                            }
+                            this.consultar();
+                        }, 500);
+                    } else {
+                        severity = 'warn';
+                        summary = 'Advertencia';
+                    }
+                    this.messageService.add({
+                        severity: severity,
+                        summary: summary,
+                        detail: response.message,
+                        life: 3000,
+                    });
+                    this.loading = false;
+
+                },
+                (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Advertencia',
+                        detail: "Error Verificar Datos",
+                        life: 3000,
+                    });
+                    this.loading = false;
                 }
-                this.messageService.add({
-                    severity: severity,
-                    summary: summary,
-                    detail: response.message,
-                    life: 3000,
-                });
-            },
-            (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Advertencia',
-                    detail: " Erro Verificar Datos",
-                    life: 3000,
-                });
-            }
-        );
-
+            );
+    }, 2000);
 }
 
 get saldo(): number {

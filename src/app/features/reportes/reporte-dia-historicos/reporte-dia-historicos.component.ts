@@ -21,9 +21,13 @@ export class ReporteDiaHistoricosComponent {
     filter:any={};
     historialDialog:boolean=false;
     historial:any=[];
+    loading:boolean=false;
     ngOnInit(): void {
-        this.today = this.formatDate(new Date());
-        this.todayF = this.formatDate(new Date(Date.now() + 86400000)); // Sumar 1 día a la fecha actual
+        const firstDayOfMonth = new Date();
+        firstDayOfMonth.setDate(1);
+        this.today = this.formatDate(firstDayOfMonth);
+        const lastDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+        this.todayF = this.formatDate(lastDayOfMonth); // Obtener el último día del mes actual
     }
 
     constructor(
@@ -69,6 +73,8 @@ export class ReporteDiaHistoricosComponent {
 
     getData(item:any) {
         this.data=[];
+        this.loading=true;
+       setTimeout(() => {
         this.service.getHistoricos(item).subscribe(
             (response) => {
                 //console.log(response.data);
@@ -81,6 +87,7 @@ export class ReporteDiaHistoricosComponent {
                         life: 3000,
                     });
                 }
+                this.loading=false;
             },
             (error) => {
                 this.messageService.add({
@@ -89,8 +96,10 @@ export class ReporteDiaHistoricosComponent {
                     detail:"Error al obtener datos",
                     life: 3000,
                 });
+                this.loading=false;
             }
         );
+       }, 1000);
     }
 
 calcularTotalVentas() {
@@ -99,6 +108,10 @@ calcularTotalVentas() {
 
 calcularTotalGastos(){
     return this.data.reduce((acc, item) => acc + Number(item.totalgastos), 0);
+}
+
+calcularTotalNeto(){
+    return this.data.reduce((acc, item) => acc + Number(item.utilidad), 0);
 }
 
 exportarPDF() {

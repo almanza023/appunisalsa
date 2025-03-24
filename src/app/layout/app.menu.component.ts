@@ -76,6 +76,12 @@ export class AppMenuComponent implements OnInit {
 
                     },
                     {
+                        label: 'Ver Caja',
+                        icon: 'pi pi-fw pi-align-justify',
+                        command: () => this.reloadCurrentRoute('apertura-caja/ver-caja')
+
+                    },
+                    {
                         label: 'Clientes',
                         icon: 'pi pi-fw pi-align-justify',
                         command: () => this.reloadCurrentRoute('clientes')
@@ -197,7 +203,7 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Reporte Día',
                         icon: 'pi pi-fw pi-align-justify',
-                        routerLink: 'reportes/dia',
+                        routerLink: 'apertura-caja/ver-caja',
 
                     },
                     {
@@ -206,7 +212,11 @@ export class AppMenuComponent implements OnInit {
                         routerLink: 'reportes/historicos',
 
                     },
-
+                    {
+                    label: 'Historico Día',
+                    icon: 'pi pi-fw pi-align-justify',
+                    routerLink: 'reportes/dia',
+                },
                 ]
             };
             let perfil =

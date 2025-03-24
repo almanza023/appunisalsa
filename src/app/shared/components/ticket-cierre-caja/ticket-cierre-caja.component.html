@@ -110,8 +110,8 @@
 
         </tr>
         <tr *ngFor="let item of data?.pedidos">
-          <td style="text-align: left;">{{ item.usuario }}</td>
-          <td style="text-align: left;">{{ item.totalpedidos  }}</td>
+          <td style="text-align: left;">{{ item.nombre }}</td>
+          <td style="text-align: left;">{{ item.cantidad  }}</td>
         </tr>
       </table>
     </div>
@@ -125,14 +125,11 @@
       <table>
         <tr>
           <th style="text-align: left;">Nombre</th>
-          <th style="text-align: left;">Total Día</th>
-          <th style="text-align: left;">Stock</th>
-
+          <th style="text-align: left;">Vendidos</th>
         </tr>
         <tr *ngFor="let item of data?.productos">
           <td style="text-align: left;">{{ item.nombre }}</td>
           <td style="text-align: left;">{{ item.cantidad  }}</td>
-          <td style="text-align: left;">{{ item.stock_actual  }}</td>
         </tr>
       </table>
     </div>

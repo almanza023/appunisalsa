@@ -33,10 +33,11 @@ export class GastosComponent {
     nombreModulo: string = 'Módulo de Gastos';
     @ViewChild(SelectorTiPoGastoComponent)
     tipogastoComponent: SelectorTiPoGastoComponent;
-    today:any="";
-    startDate:any="";
-    endDate:any="";
-    filter:any={};
+    today: any = '';
+    startDate: any = '';
+    endDate: any = '';
+    filter: any = {};
+    visibleButton: boolean = true;
 
     constructor(
         private service: GastosService,
@@ -44,16 +45,15 @@ export class GastosComponent {
     ) {}
 
     ngOnInit() {
-
         this.cols = [];
         this.statuses = [];
         this.today = this.formatDate(new Date());
         this.startDate = this.formatDate(new Date());
         this.endDate = this.formatDate(new Date());
-        this.filter={
-            fechaInicio:this.startDate,
-            fechaFinal:this.endDate,
-        }
+        this.filter = {
+            fechaInicio: this.startDate,
+            fechaFinal: this.endDate,
+        };
 
         this.getDataAll(this.filter);
     }
@@ -65,7 +65,7 @@ export class GastosComponent {
         return `${year}-${month}-${day}`;
     }
 
-    getDataAll(item:any) {
+    getDataAll(item: any) {
         this.service.postFilter(item).subscribe(
             (response) => {
                 //console.log(response.data);
@@ -93,6 +93,7 @@ export class GastosComponent {
         this.clienteDialog = true;
         this.seleccionado = {};
         this.tipogastoComponent.reiniciarComponente();
+        this.visibleButton = true;
     }
 
     deleteSelectedProducts() {
@@ -156,8 +157,7 @@ export class GastosComponent {
     saveProduct() {
         this.submitted = true;
         this.gasto.user_id = localStorage.getItem('user_id');
-        this.gasto.fecha=this.today;
-        console.log(this.gasto);
+        this.gasto.fecha = this.today;
         if (this.gasto.tipogasto_id == undefined) {
             this.messageService.add({
                 severity: 'warn',
@@ -194,7 +194,7 @@ export class GastosComponent {
         if (
             this.gasto.valortotal == undefined ||
             this.gasto.valortotal == '' ||
-            this.gasto.valortotal <0
+            this.gasto.valortotal < 0
         ) {
             this.messageService.add({
                 severity: 'warn',
@@ -205,9 +205,8 @@ export class GastosComponent {
             return;
         }
         //this.jugadorModel=this.mapearDatos(this.proveedor, false);
-
+        this.visibleButton = false;
         if (this.gasto.id == undefined) {
-
             this.crear(this.gasto);
         } else {
             this.actualizar(this.gasto.id, this.gasto);
@@ -293,16 +292,10 @@ export class GastosComponent {
         );
     }
 
-filtrarPorFecha() {
-
-    this.filter.fechaInicio=this.startDate;
-    this.filter.fechaFinal=this.endDate;
-    // Formatear las fechas para que solo quede YYYY-MM-DD
-    this.getDataAll(this.filter);
-
-
-}
-
-
-
+    filtrarPorFecha() {
+        this.filter.fechaInicio = this.startDate;
+        this.filter.fechaFinal = this.endDate;
+        // Formatear las fechas para que solo quede YYYY-MM-DD
+        this.getDataAll(this.filter);
+    }
 }

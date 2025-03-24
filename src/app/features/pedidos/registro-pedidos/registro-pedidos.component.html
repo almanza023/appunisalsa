@@ -6,6 +6,11 @@
             <h3><b>{{pedido_id}}</b></h3>
             <p-button label="Actualizar" icon="pi pi-refresh" (click)="actualizarPedido()" styleClass="p-button-warning"></p-button>
              <p-button label="Cambiar Mesa" icon="pi pi-table" (click)="cambiarMesa()" styleClass="p-button-success"></p-button>
+            <div style="display: flex; justify-content: start;">
+                <p-button label="Mis Pedidos" icon="pi pi-arrow-left" routerLink="/pedidos" styleClass="p-button-info"></p-button>
+                <p-button label="Nuevo Pedido" icon="pi pi-plus" (click)="nuevoPedido()" styleClass="p-button-danger"></p-button>
+            </div>
+
         </div>
         <div class="field" *ngIf="pedido.estado">
             <label for="fecha">Estado</label>
@@ -59,7 +64,7 @@
         </div>
 
         <div class="field" *ngIf="(infoPedido.pedido && infoPedido.pedido.estadopedido_id == 1)  && detalles.length > 0">
-            <p-button label="Finalizar Pedido" icon="pi pi-check" styleClass="p-button-success" (click)="confirm1()"></p-button>
+            <p-button *ngIf="disableButton" label="Finalizar Pedido" icon="pi pi-check" styleClass="p-button-success" (click)="confirm1()"></p-button>
         </div>
     </div>
 </div>

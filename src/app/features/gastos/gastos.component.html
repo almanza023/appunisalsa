@@ -213,11 +213,14 @@
                         <b>Valor</b>
                     </label>
                     <div class="col-12 md:col-12">
-                        <input
-                            type="number"
-                            pInputText
+                        <p-inputNumber
                             [(ngModel)]="gasto.valortotal"
-                        />
+                            mode="decimal"
+                            [minFractionDigits]="0"
+                            [maxFractionDigits]="2"
+                            [showButtons]="false"
+                            [useGrouping]="true"
+                        ></p-inputNumber>
                     </div>
                 </div>
 

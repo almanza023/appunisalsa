@@ -6,7 +6,6 @@ import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { VentasService } from 'src/app/core/services/ventas.service';
 
-
 @Component({
     selector: 'app-ventas',
     templateUrl: './ventas.component.html',
@@ -26,18 +25,18 @@ export class VentasComponent {
     seleccionado: any = {};
     item: any = {};
     rowsPerPageOptions = [5, 10, 20];
-    posiciones:any[]=[];
-    posicion:any={};
+    posiciones: any[] = [];
+    posicion: any = {};
     detalles: any = [];
     pagos: any = [];
-    totalpedido:any=0;
-    totalcantidad:any=0;
+    totalpedido: any = 0;
+    totalcantidad: any = 0;
     nombreModulo: string = 'Módulo de Ventas';
-    startDate:any;
-    endDate:any;
-    filter:any={};
-    dataReport:any;
-
+    startDate: any;
+    endDate: any;
+    filter: any = {};
+    dataReport: any;
+    loading:boolean=false;
 
     constructor(
         private service: VentasService,
@@ -45,49 +44,60 @@ export class VentasComponent {
         private messageService: MessageService
     ) {}
 
-
-
     ngOnInit() {
-        this.getDataAll(this.filter);
-        this.cols = [ ];
+        this.cols = [];
         this.statuses = [];
+        const today = new Date();
+        this.startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        this.endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        this.filter={
+            fechaInicio:this.startDate,
+            fechaFinal:this.endDate,
+        }
+        this.getDataAll(this.filter);
     }
 
-    getDataAll(item:any) {
-        this.service.postFilter(item).subscribe(
-            (response) => {
-                //console.log(response.data);
-                this.data = response.data;
-            },
-            (error) => {
-                this.messageService.add({
-                    severity: 'warn',
-                    summary: 'Advertencia',
-                    detail: error.error.data,
-                    life: 3000,
-                });
-            }
-        );
+    getDataAll(item: any) {
+        this.data=[];
+        this.loading=true;
+        setTimeout(() => {
+            this.service.postFilter(item).subscribe(
+                (response) => {
+                    //console.log(response.data);
+                    this.data = response.data;
+                    this.loading=false;
+                },
+                (error) => {
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Advertencia',
+                        detail: error.error.data,
+                        life: 3000,
+                    });
+                    this.loading=false;
+                }
+            );
+        }, 1000);
     }
 
-    filtrarPorFecha(){
+    filtrarPorFecha() {
         if (this.startDate && !this.endDate) {
             this.messageService.add({
                 severity: 'warn',
                 summary: 'Advertencia',
                 detail: 'Si ingresa Fecha Inicial debe ingresar también Fecha Final',
-                life: 3000
+                life: 3000,
             });
             return;
         }
-        let data:any = {
+        let data: any = {
             fecha_inicio: this.startDate,
-            fecha_fin: this.endDate
+            fecha_final: this.endDate,
         };
+        this.getDataAll(data);
     }
 
-
-    openNew(id:any) {
+    openNew(id: any) {
         this.router.navigate(['/ventas/registro']); // Redirigir
     }
 
@@ -95,13 +105,10 @@ export class VentasComponent {
         this.deleteProductsDialog = true;
     }
 
-
     bloqueoCliente(cliente: any) {
         this.deleteProductDialog = true;
         this.pedido = { ...cliente };
         this.pedido.cambio_estado = true;
-
-
     }
 
     confirmDelete() {
@@ -144,25 +151,24 @@ export class VentasComponent {
         this.submitted = false;
     }
 
-    getPedido(item:any) {
-        this.clienteDialog=true;
-        this.detalles=item.detalles;
-        this.pagos=item.pagos;
-        this.dataReport={
-            'venta':item,
-            'pedido':item.pedido,
-            'detalles':this.detalles,
-            'pagos':this.pagos,
-        }
-
+    getPedido(item: any) {
+        this.clienteDialog = true;
+        this.detalles = item.detalles;
+        this.pagos = item.pagos;
+        this.dataReport = {
+            venta: item,
+            pedido: item.pedido,
+            detalles: this.detalles,
+            pagos: this.pagos,
+        };
     }
 
     calcularTotal() {
-        this.totalpedido=this.detalles.reduce(
+        this.totalpedido = this.detalles.reduce(
             (total, detalle) => total + detalle.subtotal,
             0
         );
-        this.totalcantidad=this.detalles.reduce(
+        this.totalcantidad = this.detalles.reduce(
             (total, detalle) => total + detalle.cantidad,
             0
         );
@@ -176,10 +182,7 @@ export class VentasComponent {
         );
     }
 
-    calcularTotalVentas(){
+    calcularTotalVentas() {
         return this.data.reduce((acc, item) => acc + item.total, 0);
     }
-
-
-
 }
