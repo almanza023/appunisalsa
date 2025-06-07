@@ -44,6 +44,10 @@ export class RegistroVentasComponent implements OnInit {
     ventaReport:any;
     loading:boolean=false;
     disableButton:boolean=true;
+    opciones:any=[
+        {id:0,nombre:"NO"},
+        {id:1,nombre:"SI"},
+    ];
 
 
     formatDate(date: Date): string {
@@ -72,6 +76,7 @@ export class RegistroVentasComponent implements OnInit {
         this.todayF = this.formatDate(new Date(Date.now() + 86400000)); // Sumar 1 día a la fecha actual
 
         this.consultar();
+        this.venta.especial=0
     }
 
     consultar(){
@@ -178,7 +183,7 @@ export class RegistroVentasComponent implements OnInit {
                 this.productosDetalles = this.detallesPedido.map(detalle => ({
                     producto_id: detalle.producto.id,
                     cantidad: detalle.total_cantidad,
-                    precio: detalle.producto.precio,
+                    precio: detalle.precio,
                     subtotal: detalle.total_subtotal
                 }));
                 this.infoPedido=response.data.pedido;

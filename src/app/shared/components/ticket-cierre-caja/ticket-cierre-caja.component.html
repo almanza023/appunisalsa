@@ -85,7 +85,11 @@
         <tr>
             <th style="text-align: right;">Total Ventas</th>
             <td style="text-align: right;">{{data?.totalventas | currency:'COP':'symbol-narrow':'1.0-0'}}</td>
-          </tr>
+        </tr>
+        <tr>
+            <th style="text-align: right;">Total Ventas Especiales</th>
+            <td style="text-align: right;">{{data?.total_especiales | currency:'COP':'symbol-narrow':'1.0-0'}}</td>
+        </tr>
           <tr>
             <th style="text-align: right;">Total Gastos</th>
             <td style="text-align: right;">{{data?.totalgastos | currency:'COP':'symbol-narrow':'1.0-0'}}</td>
@@ -125,11 +129,15 @@
       <table>
         <tr>
           <th style="text-align: left;">Nombre</th>
-          <th style="text-align: left;">Vendidos</th>
+          <th style="text-align: left;">Precio</th>
+          <th style="text-align: left;">Cantidad</th>
+          <th style="text-align: left;">Total</th>
         </tr>
         <tr *ngFor="let item of data?.productos">
-          <td style="text-align: left;">{{ item.nombre }}</td>
+          <td style="text-align: left;">{{ item.producto }}</td>
+          <td style="text-align: left;">{{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
           <td style="text-align: left;">{{ item.cantidad  }}</td>
+          <td style="text-align: left;">{{ item.total | currency:'COP':'symbol-narrow':'1.0-0'  }}</td>
         </tr>
       </table>
     </div>

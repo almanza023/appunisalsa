@@ -2,7 +2,6 @@ import { Component, SimpleChanges, ViewChild } from '@angular/core';
 import { ConfirmationService, ConfirmEventType, MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 import { AperturaCajaService } from 'src/app/core/services/apertura-caja.service';
-import { LoadingComponent } from "../../../shared/components/loading/loading.component";
 
 
 @Component({
@@ -123,6 +122,7 @@ export class ReporteDiaComponent {
                             }
                         }),
                         pagos:this.data.pagos,
+                        total_especiales:this.data.total_especiales,
                         productos:this.data.ventas.reduce((acc:any, curr:any) => {
                             curr.detalles.forEach((d:any) => {
                                 const exist = acc.find((item:any) => item.producto_id === d.producto_id);
@@ -142,6 +142,7 @@ export class ReporteDiaComponent {
 
                     };
                     this.loading=false;
+                    console.log(this.dataReport);
                 }
 
             },

@@ -81,7 +81,7 @@
                     <tr>
                         <td>{{ detalle.producto.nombre }}</td>
                         <td>{{ detalle.total_cantidad }}</td>
-                        <td>{{ detalle.producto.precio | currency }}</td>
+                        <td>{{ detalle.precio | currency }}</td>
                         <td>{{ detalle.total_subtotal | currency }}</td>
                     </tr>
                 </ng-template>
@@ -187,15 +187,29 @@
                 </p-table>
 
                 <div class="field flex align-items-center mt-3">
-                    <label for="propina" class="mr-2"><b>Propina:</b></label>
-                    <input
-                        pInputText
-                        type="number"
-                        id="propina"
-                        [(ngModel)]="venta.propina"
-                        class="mr-2"
-                    />
+                    <div class="mr-2">
+                        <label for="propina"><b>Propina:</b></label>
+                        <input
+                            pInputText
+                            type="number"
+                            id="propina"
+                            [(ngModel)]="venta.propina"
+                        />
+                    </div>
+                    <div>
+                        <label for="tipoDocumento"><b>Factura Especial:</b></label>
+                        <p-dropdown
+                            id="tipoDocumento"
+                            [(ngModel)]="venta.especial"
+                            [options]="opciones"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            placeholder="Seleccione"
+                        ></p-dropdown>
+                    </div>
                 </div>
+
+
                 <div class="field mt-3">
                     <label for="observaciones"><b>Observaciones</b></label>
                     <textarea

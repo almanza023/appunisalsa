@@ -46,6 +46,21 @@ export class VerCajaComponent implements OnInit {
         }
     }
 
+/**
+ * Calcula el total neto a partir de los productos
+ * @returns la suma total de los productos
+ */
+calcularTotalNeto(): number {
+  if (!this.data || !this.data.productos || !this.data.productos.length) {
+    return 0;
+  }
+
+  return this.data.productos.reduce((sum: number, producto: any) => {
+    return sum + (Number(producto.total) || 0);
+  }, 0);
+}
+
+
     formatDate(date: Date): string {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
@@ -89,7 +104,7 @@ export class VerCajaComponent implements OnInit {
                 if (response && response.data) {
                     this.data = response.data;
                     // Procesar los datos para obtener el resumen de ventas por usuario
-                    if (this.data.ventas && this.data.ventas.length > 0) {
+                    if (this.data.ventas ) {
                         const ventasPorUsuario = this.data.ventas.reduce(
                             (acc: any, venta: any) => {
                                 const nombreUsuario =
@@ -135,26 +150,9 @@ export class VerCajaComponent implements OnInit {
                                     }
                                 }),
                                 pagos:this.data.pagos,
-                                productos:this.data.ventas.reduce((acc:any, curr:any) => {
-                                    curr.detalles.forEach((d:any) => {
-                                        const exist = acc.find((item:any) => item.producto_id === d.producto_id);
-                                        if(exist){
-                                            exist.cantidad += d.cantidad;
-                                        }else{
-                                            acc.push({
-                                                producto_id:d.producto_id,
-                                                nombre:d.producto?.nombre,
-                                                cantidad:d.cantidad,
-                                                stock_actual:d.producto?.stock_actual,
-                                            });
-                                        }
-                                    });
-                                    return acc;
-                                },[]),
-
+                                productos:this.data.productos,
+                                total_especiales:this.data.total_especiales,
                             };
-                            console.log(this.dataReport);
-
                     }
                 }
             },
@@ -162,6 +160,7 @@ export class VerCajaComponent implements OnInit {
                 console.error('Error al obtener datos de caja:', error);
             }
         );
+
     }
 
     confirm1(item: any) {

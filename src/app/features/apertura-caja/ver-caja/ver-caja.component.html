@@ -57,6 +57,7 @@
                 { concepto: 'Total Ventas', valor: data.totalventas },
                 { concepto: 'Total Nómina', valor: data.totalnomina },
                 { concepto: 'Total Gastos', valor: data.totalgastos },
+                { concepto: 'Total Ventas Especiales', valor: data.total_especiales, style: { backgroundColor: '#f7dc6f' } },
                 { concepto: 'Total Neto', valor: data.totalneto, style: { backgroundColor: '#abebc6' } }
             ]"
         >
@@ -195,7 +196,43 @@
                 </tr>
             </ng-template>
         </p-table>
+        <h3>PRODUCTOS VENDIDOS</h3>
+        <p-table
+            [value]="data.productos"
+            [paginator]="true"
+            [rows]="10"
+            responsiveLayout="scroll"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-producto>
+                <tr>
+                    <td>{{ producto.producto }}</td>
+                    <td>{{ producto.precio | currency : "COP" : "symbol-narrow" : "1.0-0" }}</td>
+                    <td>
+                        {{
+                            producto.cantidad
 
+                        }}
+                    </td>
+                    <td>{{ producto.total | currency : "COP" : "symbol-narrow" : "1.0-0" }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <tr style="font-weight: bold;">
+                    <td colspan="3">Total</td>
+                    <td>{{ calcularTotalNeto() | currency : "COP" : "symbol-narrow" : "1.0-0" }}</td>
+
+                </tr>
+            </ng-template>
+
+        </p-table>
     </div>
     <div class="col-12" *ngIf="data.estado==1">
         <p-button label="Cerrar Caja" icon="pi pi-lock" styleClass="p-button-success w-full" (click)="confirm1(data)" [style]="{'background-color': 'green', 'border-color': 'green'}"></p-button>

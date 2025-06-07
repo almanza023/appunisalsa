@@ -52,7 +52,7 @@
                     <td>{{ detalle.producto.nombre }}</td>
                     <td>{{ detalle.total_cantidad }}</td>
                     <td>{{ detalle.total_entregadas }}</td>
-                    <td>{{ detalle.producto.precio | currency }}</td>
+                    <td>{{ detalle.precio | currency }}</td>
                     <td>{{ detalle.total_subtotal | currency }}</td>
                 </tr>
             </ng-template>
@@ -99,6 +99,7 @@
                         <th class="col-20">Imagen</th>
                         <th class="col-20">Nombre</th>
                         <th class="col-15">Cantidad</th>
+                        <th class="col-15">Precio</th>
 
                     </tr>
                 </ng-template>
@@ -111,11 +112,16 @@
                             <br>
                             <b>{{ producto.precio | currency }}</b>
                         </td>
+
                         <td class="col-15">
                             <input pInputText type="number" [(ngModel)]="producto.cantidad" [ngModelOptions]="{ standalone: true }" min="1" [value]="1" (change)="producto.cantidad = producto.cantidad || 1" class="w-full" />
                             <br>
                             <p-button label="" icon="pi pi-plus" (click)="agregarProducto(producto, producto.cantidad); producto.cantidad = 0;"></p-button>
                             <p-button label="" icon="pi pi-times" styleClass="p-button-danger" (click)="quitarProducto(producto, producto.cantidad); producto.cantidad = 0;"></p-button>
+                        </td>
+                        <td class="col-15" *ngIf="producto.cambio_precio==1">
+                            <input pInputText type="number" [(ngModel)]="producto.precio" [ngModelOptions]="{ standalone: true }" min="1" [value]="1" (change)="producto.precio = producto.precio || 1" class="w-full" />
+
                         </td>
 
                     </tr>
