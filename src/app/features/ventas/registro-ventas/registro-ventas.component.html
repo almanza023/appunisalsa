@@ -24,7 +24,7 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Mesa</th>
-                        <th>N° Pedido</th>
+                        <th>N° Comanda</th>
                         <th>Atendido</th>
                         <th>Fecha Pedido</th>
                         <th>Opciones</th>
@@ -33,7 +33,7 @@
                 <ng-template pTemplate="body" let-item>
                     <tr>
                         <td>{{ item.mesa?.nombre }}</td>
-                        <td>{{ item.id }}</td>
+                        <td>{{ item.comanda }}</td>
                         <td>{{ item.user?.nombre }}</td>
                         <td>{{ item.fecha }}</td>
                         <td>

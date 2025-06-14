@@ -48,7 +48,8 @@ export class GastosComponent {
         this.cols = [];
         this.statuses = [];
         this.today = this.formatDate(new Date());
-        this.startDate = this.formatDate(new Date());
+        const now = new Date();
+        this.startDate = this.formatDate(new Date(now.getFullYear(), now.getMonth(), 1));
         this.endDate = this.formatDate(new Date());
         this.filter = {
             fechaInicio: this.startDate,

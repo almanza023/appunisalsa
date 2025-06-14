@@ -49,7 +49,7 @@
                 [value]="data"
                 [columns]="cols"
                 [rows]="10"
-                [globalFilterFields]="['nombre', 'posicion', 'numero', 'estado']"
+                [globalFilterFields]="['comanda', 'estado']"
                 [paginator]="true"
                 [rowsPerPageOptions]="[10, 20, 30]"
                 [showCurrentPageReport]="true"
@@ -77,14 +77,7 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="id">
-                            Código
-                            <p-sortIcon field="id"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="fecha">
-                            Fecha
-                            <p-sortIcon field="fecha"></p-sortIcon>
-                        </th>
+
                         <th pSortableColumn="comanda">
                             Comanda
                             <p-sortIcon field="comanda"></p-sortIcon>
@@ -104,6 +97,14 @@
                             Total
                             <p-sortIcon field="total"></p-sortIcon>
                         </th>
+                        <th pSortableColumn="fecha">
+                            Fecha
+                            <p-sortIcon field="fecha"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="id">
+                            Código
+                            <p-sortIcon field="id"></p-sortIcon>
+                        </th>
                         <th pSortableColumn="estado.nombre">
                             Estado
                             <p-sortIcon field="estado.nombre"></p-sortIcon>
@@ -113,14 +114,6 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-item>
                     <tr [ngStyle]="{'background-color': item.estadopedido_id == 1 ? '#abebc6' : 'transparent'}">
-                        <td style="width: 10%; min-width: 10rem">
-                            <span class="p-column-title">Código</span>
-                            {{ item.id }}
-                        </td>
-                        <td style="width: 32%; min-width: 10rem">
-                            <span class="p-column-title">Fecha</span>
-                            {{ item.fecha }}
-                        </td>
                         <td style="width: 32%; min-width: 10rem">
                             <span class="p-column-title">Comanda</span>
                             {{ item.comanda }}
@@ -138,7 +131,16 @@
                             {{ item.total | currency }}
                         </td>
 
-                        <td style="width: 26%; min-width: 10rem">
+
+                        <td style="width: 32%; min-width: 10rem">
+                            <span class="p-column-title">Fecha</span>
+                            {{ item.fecha }}
+                        </td>
+                        <td style="width: 32%; min-width: 10rem">
+                            <span class="p-column-title">Código</span>
+                            {{ item.id }}
+                        </td>
+                         <td style="width: 26%; min-width: 10rem">
                             <span class="p-column-title">Estado</span>
                             {{ item.estado.nombre }}
                         </td>
@@ -194,7 +196,7 @@
                     <tr>
                         <td>{{ detalle.producto.nombre }}</td>
                         <td>{{ detalle.total_cantidad }}</td>
-                        <td>{{ detalle.producto.precio | currency }}</td>
+                        <td>{{ detalle.precio | currency }}</td>
                         <td>{{ detalle.total_subtotal | currency }}</td>
                     </tr>
                 </ng-template>
